@@ -22,6 +22,7 @@ public class IntroductionController {
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
+        stage.setTitle("Login");
         stage.show();
     }
 
@@ -30,6 +31,7 @@ public class IntroductionController {
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
+        stage.setTitle("Register");
         stage.show();
     }
 
