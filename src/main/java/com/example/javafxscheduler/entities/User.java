@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import com.example.javafxscheduler.util.sqlOperations;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
 @Entity
 @Table(name = "users", schema = "uebung07", catalog = "")
-public class User implements sqlOperations {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -114,17 +117,35 @@ public class User implements sqlOperations {
                 '}';
     }
 
-    @Override
     public void save() {
-        SessionFactory factory = new Configuration().configure().buildSessionFactory();
-        Session session = factory.openSession();
-        session.beginTransaction();
-        session.persist(this);
-        session.getTransaction().commit();
-        session.close();
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
+            System.out.println("Connection established");
+            String name = this.getName();
+            String email = this.getEmail();
+            String password = this.getPassword();
+            String role = this.getRole();
+
+            String sql = "INSERT INTO users (name, email, password, role) VALUES ('" +
+                    name +
+                    "', '" + email +
+                    "', '" + password +
+                    "', '" + role + "');";
+
+            PreparedStatement statement = con.prepareStatement(sql);
+
+            try {
+                statement.executeUpdate();
+                System.out.println("Insert successful");
+            } catch (Exception e) {
+                System.out.println("Insert failed");
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Connection failed");
+            ex.printStackTrace();
+        }
     }
 
-    @Override
     public void delete() {
         SessionFactory factory = new Configuration().configure().buildSessionFactory();
         Session session = factory.openSession();

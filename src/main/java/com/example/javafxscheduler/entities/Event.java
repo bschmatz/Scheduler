@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import com.example.javafxscheduler.util.sqlOperations;
 
 import java.sql.Date;
 import java.sql.Time;
 
 @Entity
 @Table(name = "events", schema = "uebung07", catalog = "")
-public class Event implements sqlOperations {
+public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "event_id")
@@ -134,7 +133,6 @@ public class Event implements sqlOperations {
         return result;
     }
 
-    @Override
     public void save() {
         SessionFactory factory = new Configuration().configure().buildSessionFactory();
         Session session = factory.openSession();
@@ -144,7 +142,6 @@ public class Event implements sqlOperations {
         session.close();
     }
 
-    @Override
     public void delete() {
         SessionFactory factory = new Configuration().configure().buildSessionFactory();
         Session session = factory.openSession();
