@@ -1,3 +1,8 @@
+//IntroductionController.java
+//Represents the controller of the introduction view. It is responsible for switching to the login and register view.
+//Author: Benedikt Schmatz
+//Last changed: 19.05.2023
+
 package com.example.javafxscheduler;
 
 import javafx.event.ActionEvent;

@@ -1,3 +1,8 @@
+//Event.java
+//This class represents the event entity in the database
+//Author: Benedikt Schmatz
+//Last changed: 19.05.2023
+
 package com.example.javafxscheduler.entities;
 
 import jakarta.persistence.*;
@@ -10,30 +15,22 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.Time;
 
-@Entity
-@Table(name = "events", schema = "uebung07", catalog = "")
+
 public class Event {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "event_id")
     private int eventId;
-    @Basic
-    @Column(name = "room_id")
+
     private Integer roomId;
-    @Basic
-    @Column(name = "admin_id")
+
     private Integer adminId;
-    @Basic
-    @Column(name = "event_name")
+
     private String eventName;
-    @Basic
-    @Column(name = "event_date")
+
     private Date eventDate;
-    @Basic
-    @Column(name = "event_start_time")
+
     private Time eventStartTime;
-    @Basic
-    @Column(name = "event_end_time")
+
     private Time eventEndTime;
 
     public Event() {

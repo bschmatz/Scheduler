@@ -1,3 +1,8 @@
+//EventRegistration.java
+//This class represents the event registration entity in the database
+//Author: Benedikt Schmatz
+//Last changed: 19.05.2023
+
 package com.example.javafxscheduler.entities;
 
 import jakarta.persistence.*;
@@ -5,18 +10,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-@Entity
-@Table(name = "event_registrations", schema = "uebung07", catalog = "")
+
 public class EventRegistration{
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "registration_id")
+
     private int registrationId;
-    @Basic
-    @Column(name = "event_id")
+
     private Integer eventId;
-    @Basic
-    @Column(name = "student_id")
+
     private Integer studentId;
 
     public int getRegistrationId() {
@@ -63,14 +63,6 @@ public class EventRegistration{
         if (studentId != null ? !studentId.equals(that.studentId) : that.studentId != null) return false;
 
         return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = registrationId;
-        result = 31 * result + (eventId != null ? eventId.hashCode() : 0);
-        result = 31 * result + (studentId != null ? studentId.hashCode() : 0);
-        return result;
     }
 
     public void save(User user) {

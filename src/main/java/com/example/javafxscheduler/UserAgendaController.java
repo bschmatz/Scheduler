@@ -1,12 +1,15 @@
+//UserAgendaController.java
+//Represents the controller for the user agenda. It is responsible for displaying the events of the user.
+//Author: Benedikt Schmatz
+//Last changed: 19.05.2023
+
 package com.example.javafxscheduler;
 
 import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.User;
+import org.hibernate.sql.Insert;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class UserAgendaController {

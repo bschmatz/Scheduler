@@ -57,7 +57,6 @@
       </HBox>
       <HBox alignment="CENTER" maxHeight="50.0" VBox.vgrow="ALWAYS">
          <children>
-            <Button mnemonicParsing="false" onAction="#getId" text="test" />
             <Button mnemonicParsing="false" text="Enlist in Course">
                <font>
                   <Font size="14.0" />

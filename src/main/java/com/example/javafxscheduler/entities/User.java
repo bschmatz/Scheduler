@@ -1,3 +1,8 @@
+//User.java
+//This class represents the user entity in the database
+//Author: Benedikt Schmatz
+//Last changed: 19.05.2023
+
 package com.example.javafxscheduler.entities;
 
 import jakarta.persistence.*;
@@ -9,24 +14,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
-@Entity
-@Table(name = "users", schema = "uebung07", catalog = "")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+
     private int userId;
-    @Basic
-    @Column(name = "name")
+
     private String name;
-    @Basic
-    @Column(name = "email")
+
     private String email;
-    @Basic
-    @Column(name = "password")
+
     private String password;
-    @Basic
-    @Column(name = "role")
+
     private String role;
 
     public User() {
@@ -95,17 +92,6 @@ public class User {
 
         return true;
     }
-
-    @Override
-    public int hashCode() {
-        int result = userId;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (role != null ? role.hashCode() : 0);
-        return result;
-    }
-
 
     @Override
     public String toString() {

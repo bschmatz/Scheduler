@@ -2,8 +2,6 @@ package com.example.javafxscheduler.util;
 
 import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.User;
-import com.example.javafxscheduler.entities.EventRegistration;
-import com.example.javafxscheduler.entities.Room;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
