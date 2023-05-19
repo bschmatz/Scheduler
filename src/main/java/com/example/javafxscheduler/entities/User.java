@@ -146,12 +146,5 @@ public class User {
         }
     }
 
-    public void delete() {
-        SessionFactory factory = new Configuration().configure().buildSessionFactory();
-        Session session = factory.openSession();
-        session.beginTransaction();
-        session.remove(this);
-        session.getTransaction().commit();
-        session.close();
-    }
+
 }

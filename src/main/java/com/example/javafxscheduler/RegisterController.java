@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -36,13 +37,28 @@ public class RegisterController {
     }
 
     public void register() {
+        if (nameField.getText().isEmpty() || mailField.getText().isEmpty() || passwordField.getText().isEmpty() || roleMenu.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Not all fields filled out");
+            alert.setContentText("Please fill out all fields before submitting");
+            alert.showAndWait();
+            return;
+        }
+
         String name = nameField.getText();
         String mail = mailField.getText();
         String password = passwordField.getText();
         String role = roleMenu.getValue().toString();
         System.out.println(name + " " + mail + " " + password + " " + role);
+
         User user = new User(name, mail, password, role);
         user.save();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText("Registration successful");
+        alert.showAndWait();
+
     }
 
     public void switchToIntroduction(ActionEvent e) throws IOException {

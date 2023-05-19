@@ -5,7 +5,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.Time;
 
 @Entity
@@ -134,21 +136,16 @@ public class Event {
     }
 
     public void save() {
-        SessionFactory factory = new Configuration().configure().buildSessionFactory();
-        Session session = factory.openSession();
-        session.beginTransaction();
-        session.persist(this);
-        session.getTransaction().commit();
-        session.close();
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+            System.out.println("Connection established");
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void delete() {
-        SessionFactory factory = new Configuration().configure().buildSessionFactory();
-        Session session = factory.openSession();
-        session.beginTransaction();
-        session.remove(this);
-        session.getTransaction().commit();
-        session.close();
+
     }
 
     @Override
