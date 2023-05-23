@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -61,8 +62,8 @@
                   </Label>
                   <TextField fx:id="nameField" GridPane.columnIndex="1" />
                   <TextField fx:id="mailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <TextField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <ChoiceBox fx:id="roleMenu" prefHeight="25.0" prefWidth="210.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                  <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
             <Separator minWidth="20.0" visible="false" />

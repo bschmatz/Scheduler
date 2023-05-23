@@ -1,11 +1,12 @@
 //LoginController.java
 //Represents the controller for the login view. It is responsible for checking the login credentials and switching to the main view.
 //Author: Benedikt Schmatz
-//Last changed: 19.05.2023
+//Last changed: 23.05.2023
 
 package com.example.javafxscheduler;
 
 import com.example.javafxscheduler.entities.User;
+import com.example.javafxscheduler.util.UserUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,10 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class LoginController {
     @FXML
@@ -33,45 +31,42 @@ public class LoginController {
     private Parent root;
 
     private User user;
+    private ArrayList<User> userList;
+
 
 
     public void loginCheck(ActionEvent e) throws IOException {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
-            System.out.println("Connection established");
-            String name = nameField.getText();
-            String password = passwordField.getText();
 
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM users");
-            ResultSet rs = ps.executeQuery();
-            Thread.sleep(1000);
+        String name = nameField.getText();
+        String password = passwordField.getText();
 
-            while (rs.next()) {
-                if (rs.getString("name").equals(name) && rs.getString("password").equals(password)) {
-                    user = new User(rs.getString("name"), rs.getString("email") ,rs.getString("password"), rs.getString("role"));
-                    System.out.println("Login successful");
-
-                    switch (user.getRole()) {
-                        case "Admin":
-                            System.out.println("Admin logged in");
-                            switchToAdminView(e);
-                            return;
-                        case "Assistant":
-                            System.out.println("Assistant logged in");
-                            return;
-                        case "Student":
-                            System.out.println("Student logged in");;
-                            switchToUserAgenda(e);
-                            return;
-                        default:
-                            System.out.println("No role found");
-                            break;
-                    }
-                }
+        for (User currentUser : userList) {
+            if (currentUser.getName().equals(name) && currentUser.getPassword().equals(password)) {
+                user = currentUser;
+                break;
             }
+        }
 
-        } catch (Exception ex) {
-            System.out.println("Connection failed");
-            ex.printStackTrace();
+        if (user != null) {
+            System.out.println("Login successful");
+            switch (user.getRole()) {
+                case "Admin":
+                    System.out.println("Admin logged in");
+                    switchToAdminView(e);
+                    return;
+                case "Assistant":
+                    System.out.println("Assistant logged in");
+                    return;
+                case "Student":
+                    System.out.println("Student logged in");;
+                    switchToUserAgenda(e);
+                    return;
+                default:
+                    System.out.println("No role found");
+                    break;
+            }
+        } else {
+            System.out.println("Login failed");
         }
 
     }
@@ -86,13 +81,13 @@ public class LoginController {
     }
 
     public void switchToUserAgenda(ActionEvent e) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("UserAgenda.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("UserView.fxml"));
         root = loader.load();
 
-        UserAgendaController userAgendaController = loader.getController();
-        userAgendaController.setCurrentUser(user);
+        UserView userView = loader.getController();
+        userView.setCurrentUser(user);
 
-        //root = FXMLLoader.load(getClass().getResource("UserAgenda.fxml"));
+        //root = FXMLLoader.load(getClass().getResource("UserView.fxml"));
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -114,4 +109,7 @@ public class LoginController {
         stage.show();
     }
 
+    public void setUserList(ArrayList<User> userList) {
+        this.userList = userList;
+    }
 }

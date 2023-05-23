@@ -1,56 +1,90 @@
+//UserUtil.java
+//Represents a utility class for the user entity. It is responsible for the communication with the database.
+//Author: Benedikt Schmatz
+//Last changed: 23.05.2023
+
 package com.example.javafxscheduler.util;
 
-import com.example.javafxscheduler.entities.Event;
-import com.example.javafxscheduler.entities.User;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
 
+import com.example.javafxscheduler.entities.User;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class UserUtil {
 
-    public User getUserByName(String userName) {
-        SessionFactory factory = new Configuration().configure().buildSessionFactory();
-        Session session = factory.openSession();
+    public static ArrayList<User> getAllUsers() {
+        ArrayList<User> users = new ArrayList<>();
 
-        Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("from User u where name = '" + userName + "'", User.class);
-        User user = (User) query.list().get(0);
-        transaction.commit();
-        session.close();
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
+            System.out.println("Connection established");
 
-        return user;
-    }
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users");
+            ResultSet rs = ps.executeQuery();
+            Thread.sleep(1000);
+            while (rs.next()) {
+                users.add(new User(rs.getString("name"), rs.getString("email") ,rs.getString("password"), rs.getString("role")));
+            }
 
-    public ArrayList<User> getAllUsers() {
-        SessionFactory factory = new Configuration().configure().buildSessionFactory();
-        Session session = factory.openSession();
-
-        Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("from User", User.class);
-        ArrayList<User> users = (ArrayList<User>) query.list();
-        transaction.commit();
-        session.close();
+        } catch (Exception ex) {
+            System.out.println("Connection failed");
+            ex.printStackTrace();
+        }
 
         return users;
     }
 
-    public ArrayList<Event> getUserEvents(User user) {
-        SessionFactory factory = new Configuration().configure().buildSessionFactory();
-        Session session = factory.openSession();
-        ArrayList<Event> events;
+    public static User getUserByName(String name){
+        User user = null;
 
-        Transaction transaction = session.beginTransaction();
-        String query = "SELECT e FROM Event e, User u, EventRegistration er WHERE u.userId = er.studentId AND er.eventId = e.eventId AND u.userId = " + user.getUserId();
-        events = (ArrayList<Event>) session.createQuery(query).list();
-        transaction.commit();
-        session.close();
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
-        System.out.println(events);
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE name = '" + name + "'");
+            ResultSet rs = ps.executeQuery();
+            Thread.sleep(1000);
+            while (rs.next()){
+                user = new User(rs.getString("name"), rs.getString("email") ,rs.getString("password"), rs.getString("role"));
+                break;
+            }
 
-        return events;
+
+        }catch (Exception e){
+            System.out.println("Connection failed");
+            e.printStackTrace();
+        }
+        return user;
     }
+
+    public static void save(User user) {
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
+            System.out.println("Connection established");
+            String name = user.getName();
+            String email = user.getEmail();
+            String password = user.getPassword();
+            String role = user.getRole();
+
+            String sql = "INSERT INTO users (name, email, password, role) VALUES ('" +
+                    name +
+                    "', '" + email +
+                    "', '" + password +
+                    "', '" + role + "');";
+
+            PreparedStatement statement = con.prepareStatement(sql);
+
+            try {
+                statement.executeUpdate();
+                System.out.println("Insert successful");
+            } catch (Exception e) {
+                System.out.println("Insert failed");
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Connection failed");
+            ex.printStackTrace();
+        }
+    }
+
 }

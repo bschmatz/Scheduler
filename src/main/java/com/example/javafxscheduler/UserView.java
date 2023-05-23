@@ -7,12 +7,11 @@ package com.example.javafxscheduler;
 
 import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.User;
-import org.hibernate.sql.Insert;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class UserAgendaController {
+public class UserView {
     private static User currentUser;
     private static ArrayList<Event> events = new ArrayList<>();
 

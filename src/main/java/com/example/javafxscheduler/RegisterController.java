@@ -2,7 +2,7 @@
 //Represents the controller for the register view. It is responsible for checking the register credentials and switching back to the login view.
 //It also adds the new user to the database.
 //Author: Benedikt Schmatz
-//Last changed: 19.05.2023
+//Last changed: 23.05.2023
 
 package com.example.javafxscheduler;
 
@@ -17,9 +17,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.hibernate.tool.schema.Action;
+import com.example.javafxscheduler.util.UserUtil;
 
 import java.io.IOException;
 
@@ -29,10 +30,10 @@ public class RegisterController {
     @FXML
     private TextField mailField;
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
     @FXML
     private ChoiceBox roleMenu;
-    ObservableList<String> roleList = FXCollections.observableArrayList("Admin", "Assistant", "Student");
+    ObservableList<String> roleList = FXCollections.observableArrayList("Assistant", "Student");
 
     private Stage stage;
     private Scene scene;
@@ -59,7 +60,7 @@ public class RegisterController {
         System.out.println(name + " " + mail + " " + password + " " + role);
 
         User user = new User(name, mail, password, role);
-        user.save();
+        UserUtil.save(user);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
         alert.setHeaderText("Registration successful");

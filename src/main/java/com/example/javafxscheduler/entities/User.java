@@ -103,34 +103,4 @@ public class User {
                 '}';
     }
 
-    public void save() {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
-            System.out.println("Connection established");
-            String name = this.getName();
-            String email = this.getEmail();
-            String password = this.getPassword();
-            String role = this.getRole();
-
-            String sql = "INSERT INTO users (name, email, password, role) VALUES ('" +
-                    name +
-                    "', '" + email +
-                    "', '" + password +
-                    "', '" + role + "');";
-
-            PreparedStatement statement = con.prepareStatement(sql);
-
-            try {
-                statement.executeUpdate();
-                System.out.println("Insert successful");
-            } catch (Exception e) {
-                System.out.println("Insert failed");
-            }
-
-        } catch (Exception ex) {
-            System.out.println("Connection failed");
-            ex.printStackTrace();
-        }
-    }
-
-
 }
