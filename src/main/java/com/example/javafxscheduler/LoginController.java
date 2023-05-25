@@ -56,6 +56,7 @@ public class LoginController {
                     return;
                 case "Assistant":
                     System.out.println("Assistant logged in");
+                    switchToAssistantView(e);
                     return;
                 case "Student":
                     System.out.println("Student logged in");;
@@ -106,6 +107,17 @@ public class LoginController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("AdminView");
+        stage.show();
+    }
+
+    public void switchToAssistantView(ActionEvent e) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AssistantView.fxml"));
+        root = loader.load();
+
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("AssistantView");
         stage.show();
     }
 
