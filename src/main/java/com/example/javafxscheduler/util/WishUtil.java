@@ -13,7 +13,7 @@ public class WishUtil {
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
             System.out.println("Connection established");
 
-            String sql = "INSERT INTO wishes (assistant_name, date, start_time, end_time, event_name) VALUES ('" + wish.getAssistant() + "', '" + wish.getDate() + "', '" + wish.getStartTime() + "', '" + wish.getEndTime() + "', '" + wish.getCourse() + "')";
+            String sql = "INSERT INTO wishes (assistant_name, date, start_time, end_time, event_name, room) VALUES ('" + wish.getAssistant() + "', '" + wish.getDate() + "', '" + wish.getStartTime() + "', '" + wish.getEndTime() + "', '" + wish.getCourse() + "', '" + wish.getRoom() + "')";
             PreparedStatement statement = con.prepareStatement(sql);
 
             try {

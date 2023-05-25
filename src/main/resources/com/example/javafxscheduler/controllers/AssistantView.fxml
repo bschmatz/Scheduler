@@ -69,13 +69,13 @@
                         <Insets left="5.0" right="5.0" />
                      </HBox.margin></ChoiceBox>
                   <Label text="-" />
-                  <ChoiceBox fx:id="endHours" prefWidth="150.0">
+                  <ChoiceBox fx:id="endHours" onMouseClicked="#timeCheck" prefWidth="150.0">
                      <HBox.margin>
                         <Insets left="5.0" right="5.0" />
                      </HBox.margin>
                   </ChoiceBox>
                   <Label text=":" />
-                  <ChoiceBox fx:id="endMinutes" prefWidth="150.0">
+                  <ChoiceBox fx:id="endMinutes" onMouseClicked="#minuteCheck" prefWidth="150.0">
                      <HBox.margin>
                         <Insets left="5.0" right="5.0" />
                      </HBox.margin></ChoiceBox>

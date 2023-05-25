@@ -17,6 +17,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import org.w3c.dom.Text;
 
 import java.sql.Time;
@@ -26,6 +28,8 @@ public class AssistantViewController {
     private User user;
     private final int START_HOUR = 8;
     private final int END_HOUR = 23;
+    private ObservableList hours = FXCollections.observableArrayList(TimeList.getHours(START_HOUR, END_HOUR));
+    private ObservableList minutes = FXCollections.observableArrayList(TimeList.getMinutes());
 
     @FXML
     private ChoiceBox courseField;
@@ -43,7 +47,6 @@ public class AssistantViewController {
     private ChoiceBox endMinutes;
 
     public void initialize(){
-
         courseField.setItems(FXCollections.observableArrayList("Maths", "Programming", "English", "Algorithms", "Databases"));
         startHours.setItems(FXCollections.observableArrayList(TimeList.getHours(START_HOUR, END_HOUR)));
         startMinutes.setItems(FXCollections.observableArrayList(TimeList.getMinutes()));
@@ -77,6 +80,20 @@ public class AssistantViewController {
         }
 
         return true;
+    }
+
+    public void timeCheck(MouseEvent e){
+        endHours.setItems(FXCollections.observableArrayList(TimeList.getHours(Integer.parseInt(startHours.getValue().toString()), END_HOUR)));
+    }
+
+    public void minuteCheck(MouseEvent e){
+        if (endHours.getValue() == null){
+            return;
+        } else if (Integer.parseInt((String) endHours.getValue()) == END_HOUR){
+            endMinutes.setItems(FXCollections.observableArrayList("00"));
+        }else {
+            endMinutes.setItems(FXCollections.observableArrayList(TimeList.getMinutes()));
+        }
     }
 
     public void setUser(User user) {

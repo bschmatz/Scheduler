@@ -17,6 +17,7 @@ public class Wish {
         this.startTime = startTime;
         this.endTime = endTime;
         this.course = course;
+        this.room = room;
     }
 
     public String getAssistant() {
