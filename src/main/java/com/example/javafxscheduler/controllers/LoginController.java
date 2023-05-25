@@ -3,7 +3,7 @@
 //Author: Benedikt Schmatz
 //Last changed: 23.05.2023
 
-package com.example.javafxscheduler;
+package com.example.javafxscheduler.controllers;
 
 import com.example.javafxscheduler.entities.User;
 import com.example.javafxscheduler.util.UserUtil;
@@ -33,7 +33,9 @@ public class LoginController {
     private User user;
     private ArrayList<User> userList;
 
-
+    public void initialize() {
+        userList = UserUtil.getAllUsers();
+    }
 
     public void loginCheck(ActionEvent e) throws IOException {
 
@@ -85,7 +87,7 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("UserView.fxml"));
         root = loader.load();
 
-        UserView userView = loader.getController();
+        UserViewController userView = loader.getController();
         userView.setCurrentUser(user);
 
         //root = FXMLLoader.load(getClass().getResource("UserView.fxml"));
@@ -113,6 +115,9 @@ public class LoginController {
     public void switchToAssistantView(ActionEvent e) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("AssistantView.fxml"));
         root = loader.load();
+
+        AssistantViewController assistantViewController = loader.getController();
+        assistantViewController.setUser(user);
 
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);

@@ -3,7 +3,7 @@
 //Author: Benedikt Schmatz
 //Last changed: 19.05.2023
 
-package com.example.javafxscheduler;
+package com.example.javafxscheduler.controllers;
 
 import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.User;
@@ -11,7 +11,7 @@ import com.example.javafxscheduler.entities.User;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class UserView {
+public class UserViewController {
     private static User currentUser;
     private static ArrayList<Event> events = new ArrayList<>();
 

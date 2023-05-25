@@ -3,12 +3,10 @@
 //Author: Benedikt Schmatz
 //Last changed: 19.05.2023
 
-package com.example.javafxscheduler;
+package com.example.javafxscheduler.controllers;
 
-import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.User;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 

@@ -4,7 +4,7 @@
 //Author: Benedikt Schmatz
 //Last changed: 23.05.2023
 
-package com.example.javafxscheduler;
+package com.example.javafxscheduler.controllers;
 
 import com.example.javafxscheduler.entities.User;
 import javafx.collections.FXCollections;
@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import com.example.javafxscheduler.util.UserUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class RegisterController {
     @FXML
@@ -39,8 +40,14 @@ public class RegisterController {
     private Scene scene;
     private Parent root;
 
+    private ArrayList<User> userList;
+
     public void initialize() {
         roleMenu.setItems(roleList);
+    }
+
+    public void setUserList(ArrayList<User> userList) {
+        this.userList = userList;
     }
 
     public void register() {
@@ -69,7 +76,8 @@ public class RegisterController {
     }
 
     public void switchToIntroduction(ActionEvent e) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("Introduction.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Introduction.fxml"));
+        root = loader.load();
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);

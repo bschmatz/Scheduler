@@ -27,8 +27,8 @@ public class TimeList {
 
     public static String[] getHours(int start, int end) {
         String[] hours = new String[end - start + 1];
-        for (int i = start; i < hours.length; i++) {
-            hours[i] = String.valueOf(i);
+        for (int i = 0; i < hours.length; i++) {
+            hours[i] = String.valueOf(start + i);
         }
         return hours;
     }

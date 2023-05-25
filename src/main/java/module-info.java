@@ -7,5 +7,6 @@ open module com.example.javafxscheduler {
     requires java.naming;
 
     exports com.example.javafxscheduler;
+    exports com.example.javafxscheduler.controllers;
 
 }
