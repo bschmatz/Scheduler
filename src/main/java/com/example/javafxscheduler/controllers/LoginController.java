@@ -1,7 +1,7 @@
 //LoginController.java
 //Represents the controller for the login view. It is responsible for checking the login credentials and switching to the main view.
 //Author: Benedikt Schmatz
-//Last changed: 23.05.2023
+//Last changed: 26.05.2023
 
 package com.example.javafxscheduler.controllers;
 
@@ -45,6 +45,7 @@ public class LoginController {
         for (User currentUser : userList) {
             if (currentUser.getName().equals(name) && currentUser.getPassword().equals(password)) {
                 user = currentUser;
+                user.setUserId(UserUtil.getUserId(user));
                 break;
             }
         }

@@ -1,10 +1,16 @@
+//WishUtil.java
+//This class is used for database interaction regarding the wishes
+//Author: Benedikt Schmatz
+//Last changed: 26.05.2023
+
 package com.example.javafxscheduler.util;
 
+import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.Wish;
+import javafx.collections.ObservableList;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class WishUtil {
 
@@ -28,5 +34,108 @@ public class WishUtil {
             ex.printStackTrace();
         }
 
+    }
+
+    public static Wish getWishByEvent(Event e){
+Wish wish = null;
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
+
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM wishes WHERE event_name = '" + e.getEventName() + "' AND date = '" + e.getEventDate() + "' AND start_time = '" + e.getEventStartTime() + "' AND end_time = '" + e.getEventEndTime() + "' AND room = '" + e.getEventRoom() + "'");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                wish = new Wish(rs.getString("assistant_name"), rs.getDate("date"), rs.getTime("start_time"), rs.getTime("end_time"), rs.getString("event_name"), rs.getString("room"));
+                break;
+            }
+
+        } catch (Exception ex){
+            System.out.println("Connection failed");
+        }
+
+        return wish;
+    }
+
+    public static void deleteWish(Wish wish) {
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
+            System.out.println("Connection established");
+
+            String sql = "DELETE FROM wishes WHERE assistant_name = '" + wish.getAssistant() + "' AND date = '" + wish.getDate() + "' AND start_time = '" + wish.getStartTime() + "' AND end_time = '" + wish.getEndTime() + "' AND event_name = '" + wish.getCourse() + "' AND room = '" + wish.getRoom() + "'";
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            try {
+                ps.executeUpdate();
+                System.out.println("Delete successful");
+            } catch (Exception e) {
+                System.out.println("Delete failed");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Connection failed");
+        }
+
+    }
+
+    public static ObservableList<String> observableList(Wish[] wishes) {
+        ObservableList<String> observableList = javafx.collections.FXCollections.observableArrayList();
+        for (Wish wish : wishes) {
+            observableList.add(wish.toString());
+        }
+        return observableList;
+    }
+
+    public static ObservableList<Wish> observableWishList(Wish[] wishes) {
+        ObservableList<Wish> observableList = javafx.collections.FXCollections.observableArrayList();
+        for (Wish wish : wishes) {
+            observableList.add(wish);
+        }
+        return observableList;
+    }
+
+    public static Wish[] getAllWishes() {
+        ArrayList<Wish> wishes = new ArrayList<>();
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "SELECT * FROM wishes ORDER BY date , start_time;";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                wishes.add(new Wish(rs.getString("assistant_name"), rs.getDate("date"), rs.getTime("start_time"), rs.getTime("end_time"), rs.getString("event_name"), rs.getString("room")));
+            }
+
+        }catch (Exception e) {
+            System.out.println("Connection failed");
+            e.printStackTrace();
+        }
+
+        System.out.println(wishes);
+
+        return wishes.toArray(new Wish[0]);
+    }
+
+    public static Wish[] getWishesByName(String username) {
+        ArrayList<Wish> wishes = new ArrayList<>();
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "SELECT * FROM wishes WHERE assistant_name = '" + username + "' ORDER BY date , start_time;";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                wishes.add(new Wish(rs.getString("assistant_name"), rs.getDate("date"), rs.getTime("start_time"), rs.getTime("end_time"), rs.getString("event_name"), rs.getString("room")));
+            }
+
+        }catch (Exception e) {
+            System.out.println("Connection failed");
+            e.printStackTrace();
+        }
+
+        return wishes.toArray(new Wish[0]);
     }
 }

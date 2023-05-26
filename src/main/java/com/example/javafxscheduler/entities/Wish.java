@@ -1,3 +1,8 @@
+//Wish.java
+//This class represents the wish entity in the database
+//Author: Benedikt Schmatz
+//Last changed: 26.05.2023
+
 package com.example.javafxscheduler.entities;
 
 import java.sql.Time;
@@ -60,13 +65,16 @@ public class Wish {
         this.course = course;
     }
 
-        public String getRoom() {
+    public String getRoom() {
         return room;
     }
 
-        public void setRoom(String room) {
+    public void setRoom(String room) {
         this.room = room;
     }
 
-
+    @Override
+    public String toString(){
+        return course + " | Date: " + date + " | Start: " + startTime + " | End: " + endTime + " | Room: " + room + " | Assistant: " + assistant;
+    }
 }

@@ -2,7 +2,7 @@
 //Represents the controller for the register view. It is responsible for checking the register credentials and switching back to the login view.
 //It also adds the new user to the database.
 //Author: Benedikt Schmatz
-//Last changed: 23.05.2023
+//Last changed: 26.05.2023
 
 package com.example.javafxscheduler.controllers;
 

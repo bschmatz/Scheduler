@@ -1,7 +1,7 @@
-//UserAgendaController.java
+//UserViewController.java
 //Represents the controller for the user agenda. It is responsible for displaying the events of the user.
 //Author: Benedikt Schmatz
-//Last changed: 19.05.2023
+//Last changed: 26.05.2023
 
 package com.example.javafxscheduler.controllers;
 
@@ -34,7 +34,7 @@ public class UserViewController {
             rs = statement.executeQuery();
 
             while (rs.next()) {
-                Event event = new Event(rs.getInt("room_id"), rs.getInt("admin_id"), rs.getString("event_name"), rs.getDate("event_date"), rs.getTime("event_start_time"), rs.getTime("event_end_time"));
+                Event event = new Event(rs.getString("event_room"), rs.getInt("admin_id"), rs.getString("event_name"), rs.getDate("event_date"), rs.getTime("event_start_time"), rs.getTime("event_end_time"));
                 event.setEventId(getEventId(event, con));
                 System.out.println(event);
                 events.add(event);

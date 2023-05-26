@@ -1,3 +1,8 @@
+//TimeUtil.java
+//This class provides utility methods for time related operations
+//Author: Benedikt Schmatz
+//Last changed: 26.05.2023
+
 package com.example.javafxscheduler.util;
 
 import javafx.collections.FXCollections;
@@ -7,7 +12,7 @@ import javafx.scene.control.ChoiceBox;
 import java.sql.Time;
 import java.util.ArrayList;
 
-public class TimeList {
+public class TimeUtil {
 
     public static ChoiceBox getTimeBox(Time start, Time end) {
         ChoiceBox box;

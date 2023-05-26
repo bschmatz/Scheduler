@@ -1,7 +1,7 @@
 //UserUtil.java
 //Represents a utility class for the user entity. It is responsible for the communication with the database.
 //Author: Benedikt Schmatz
-//Last changed: 23.05.2023
+//Last changed: 26.05.2023
 
 package com.example.javafxscheduler.util;
 
@@ -24,7 +24,6 @@ public class UserUtil {
 
             PreparedStatement ps = con.prepareStatement("SELECT * FROM users");
             ResultSet rs = ps.executeQuery();
-            Thread.sleep(1000);
             while (rs.next()) {
                 users.add(new User(rs.getString("name"), rs.getString("email") ,rs.getString("password"), rs.getString("role")));
             }
@@ -37,6 +36,26 @@ public class UserUtil {
         return users;
     }
 
+    public static int getUserId(User user){
+        int userId = 0;
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            PreparedStatement ps = con.prepareStatement("SELECT user_id FROM users WHERE name = '" + user.getName() + "' AND email = '" + user.getEmail() + "'");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                userId = rs.getInt("user_id");
+                break;
+            }
+
+        }catch (Exception e){
+            System.out.println("Connection failed");
+        }
+
+        return userId;
+    }
+
     public static User getUserByName(String name){
         User user = null;
 
@@ -44,7 +63,6 @@ public class UserUtil {
 
             PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE name = '" + name + "'");
             ResultSet rs = ps.executeQuery();
-            Thread.sleep(1000);
             while (rs.next()){
                 user = new User(rs.getString("name"), rs.getString("email") ,rs.getString("password"), rs.getString("role"));
                 break;
