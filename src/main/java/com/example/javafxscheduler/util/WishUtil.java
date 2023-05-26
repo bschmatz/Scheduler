@@ -37,7 +37,7 @@ public class WishUtil {
     }
 
     public static Wish getWishByEvent(Event e){
-Wish wish = null;
+        Wish wish = null;
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 

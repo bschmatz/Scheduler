@@ -10,12 +10,19 @@ import com.example.javafxscheduler.entities.User;
 import com.example.javafxscheduler.entities.Wish;
 import com.example.javafxscheduler.util.*;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -38,6 +45,10 @@ public class AdminViewController {
     ChoiceBox endMinutes;
     @FXML
     ListView<Wish> wishList;
+
+    private Stage stage;
+    private Parent root;
+    private Scene scene;
 
     private final int START_HOUR = 8;
     private final int END_HOUR = 23;
@@ -68,11 +79,12 @@ public class AdminViewController {
 
         EventUtil.saveEvent(event, user);
 
-        Wish toDelete = WishUtil.getWishByEvent(event);
-        WishUtil.deleteWish(toDelete);
-
-        int assistantId = UserUtil.getUserId(UserUtil.getUserByName(toDelete.getAssistant()));
-        EventRegistrationUtil.saveEventRegistration(course, assistantId);
+        Wish wish;
+        if ((wish = WishUtil.getWishByEvent(event)) != null) {
+            WishUtil.deleteWish(wish);
+            int assistantId = UserUtil.getUserId(UserUtil.getUserByName(wish.getAssistant()));
+            EventRegistrationUtil.saveEventRegistration(course, assistantId);
+        }
 
         wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
 
@@ -87,6 +99,11 @@ public class AdminViewController {
 
     public void transferData(){
         Wish wish = wishList.getSelectionModel().getSelectedItem();
+
+        if (wish == null){
+            return;
+        }
+
         courseField.setValue(wish.getCourse());
         Date date = (Date) wish.getDate();
         eventDate.setValue(date.toLocalDate());
@@ -97,6 +114,17 @@ public class AdminViewController {
         endMinutes.setValue(wish.getEndTime().toLocalTime().getMinute());
 
     }
+
+        public void switchToLogin(ActionEvent e) throws IOException {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+            root = loader.load();
+            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login");
+            stage.show();
+        }
+
 
     public void setUser(User user) {
         this.user = user;

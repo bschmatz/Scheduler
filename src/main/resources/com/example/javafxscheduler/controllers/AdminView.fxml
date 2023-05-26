@@ -6,6 +6,8 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
@@ -17,13 +19,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<TabPane minHeight="300.0" minWidth="400.0" prefHeight="570.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxscheduler.controllers.AdminViewController">
+<TabPane minWidth="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxscheduler.controllers.AdminViewController">
    <tabs>
       <Tab closable="false" text="Register new Event">
          <content>
-            <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" HBox.hgrow="ALWAYS">
                <children>
-                  <ListView fx:id="wishList" onMouseClicked="#transferData" HBox.hgrow="ALWAYS" />
+                  <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="wishList" onMouseClicked="#transferData" />
+                     </content>
+                  </ScrollPane>
                   <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                      <children>
                         <Label text="Register new Event">
@@ -90,14 +96,30 @@
                               <ChoiceBox fx:id="courseField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
-                        <Button mnemonicParsing="false" onAction="#saveEvent" text="Submit">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
+                        <HBox alignment="CENTER">
                            <VBox.margin>
                               <Insets bottom="4.0" top="4.0" />
                            </VBox.margin>
-                        </Button>
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#switchToLogin" text="Back to Login">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </Button>
+                              <Separator prefWidth="50.0" visible="false" />
+                              <Button mnemonicParsing="false" onAction="#saveEvent" text="Submit">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>
