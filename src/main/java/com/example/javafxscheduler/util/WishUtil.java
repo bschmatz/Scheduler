@@ -85,14 +85,6 @@ public class WishUtil {
         return observableList;
     }
 
-    public static ObservableList<Wish> observableWishList(Wish[] wishes) {
-        ObservableList<Wish> observableList = javafx.collections.FXCollections.observableArrayList();
-        for (Wish wish : wishes) {
-            observableList.add(wish);
-        }
-        return observableList;
-    }
-
     public static Wish[] getAllWishes() {
         ArrayList<Wish> wishes = new ArrayList<>();
 

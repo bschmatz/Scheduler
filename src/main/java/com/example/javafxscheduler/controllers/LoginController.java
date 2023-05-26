@@ -62,7 +62,7 @@ public class LoginController {
                     switchToAssistantView(e);
                     return;
                 case "Student":
-                    System.out.println("Student logged in");;
+                    System.out.println("Student logged in");
                     switchToUserAgenda(e);
                     return;
                 default:
@@ -125,9 +125,5 @@ public class LoginController {
         stage.setScene(scene);
         stage.setTitle("AssistantView");
         stage.show();
-    }
-
-    public void setUserList(ArrayList<User> userList) {
-        this.userList = userList;
     }
 }

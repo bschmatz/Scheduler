@@ -12,6 +12,24 @@ import java.sql.ResultSet;
 
 public class EventRegistrationUtil {
 
+    public static boolean userRegistered(String event_name, int userId){
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "SELECT * FROM event_registrations WHERE event_name = '" + event_name + "' AND student_id = '" + userId + "'";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+                return true;
+            }
+
+        }catch (Exception e){
+            System.out.println("Connection failed");
+        }
+        return false;
+    }
+
     public static boolean registrationExists(String event_name) {
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
@@ -38,6 +56,21 @@ public class EventRegistrationUtil {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.executeUpdate();
             System.out.println("Event saved");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    public static void deleteEventRegistration(String eventName, int userId) {
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "DELETE FROM event_registrations WHERE event_name = '" + eventName + "' AND student_id = '" + userId + "'";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("Event deleted");
 
         } catch (Exception e) {
             e.printStackTrace();

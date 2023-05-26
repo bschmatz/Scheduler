@@ -5,63 +5,69 @@
 
 package com.example.javafxscheduler.controllers;
 
+import javafx.fxml.FXML;
 import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.User;
+import com.example.javafxscheduler.util.EventRegistrationUtil;
+import com.example.javafxscheduler.util.EventUtil;
+import com.example.javafxscheduler.util.UserUtil;
+import javafx.collections.FXCollections;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListView;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class UserViewController {
+
+    @FXML
+    private DatePicker datePicker;
+    @FXML
+    private ListView<Event> eventList = new ListView<>();
+    @FXML
+    private Button enlistButton;
+    @FXML
+    private Button signOutButton;
+    @FXML
+    private ChoiceBox courseBox;
+
     private static User currentUser;
-    private static ArrayList<Event> events = new ArrayList<>();
+
+    public void initialize() {
+        courseBox.setItems(FXCollections.observableArrayList("Maths", "Programming", "English", "Algorithms", "Databases"));
+    }
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getEventsByUser(currentUser)));
+        System.out.println(eventList.getItems().toString());
     }
 
-    public static void getEvents() {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
-            System.out.println("Connection established");
-            String sql = "SELECT user_id FROM users WHERE name = '" + currentUser.getName() + "' AND email = '" + currentUser.getEmail() + "';";
-
-            PreparedStatement statement = con.prepareStatement(sql);
-            ResultSet rs = statement.executeQuery();
-            rs.next();
-            int id = rs.getInt("user_id");
-
-            sql = "SELECT * FROM event_registrations er, events e WHERE student_id = '" + id + "' AND er.event_id = e.event_id;";
-            statement = con.prepareStatement(sql);
-            rs = statement.executeQuery();
-
-            while (rs.next()) {
-                Event event = new Event(rs.getString("event_room"), rs.getInt("admin_id"), rs.getString("event_name"), rs.getDate("event_date"), rs.getTime("event_start_time"), rs.getTime("event_end_time"));
-                event.setEventId(getEventId(event, con));
-                System.out.println(event);
-                events.add(event);
-
-            }
-
-        } catch (Exception ex) {
-            System.out.println("Connection failed");
-            ex.printStackTrace();
-        }
-    }
-
-    private static int getEventId(Event event, Connection con) throws Exception{
-        String sql = "SELECT event_id FROM events WHERE event_name = '" + event.getEventName() + "' AND event_date = '" + event.getEventDate() + "' AND event_start_time = '" + event.getEventStartTime() + "' AND event_end_time = '" + event.getEventEndTime() + "';";
-        PreparedStatement statement = con.prepareStatement(sql);
-        ResultSet rs = statement.executeQuery();
-        rs.next();
-        return rs.getInt("event_id");
+    public void refreshEvents() {
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getEventsByUser(currentUser)));
     }
 
     public void enlist() {
 
+        //checks if the user has already been registerd for the event
+        if (EventRegistrationUtil.userRegistered(courseBox.getValue().toString(), UserUtil.getUserId(currentUser))) {
+            return;
+        }
+
+        EventRegistrationUtil.saveEventRegistration(courseBox.getValue().toString(), UserUtil.getUserId(currentUser));
+        refreshEvents();
     }
 
-    public static void main(String[] args) {
-        currentUser = new User("Gamal", "gamal@gmail.com", "gamal123", "Student");
-        getEvents();
+    public void signOut() {
+
+        if (!EventRegistrationUtil.userRegistered(courseBox.getValue().toString(), UserUtil.getUserId(currentUser))) {
+            return;
+        }
+
+        EventRegistrationUtil.deleteEventRegistration(courseBox.getValue().toString(), UserUtil.getUserId(currentUser));
+        refreshEvents();
     }
 
 }
