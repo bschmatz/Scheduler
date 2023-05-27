@@ -5,6 +5,7 @@
 
 package com.example.javafxscheduler.controllers;
 
+import com.example.javafxscheduler.util.TimeUtil;
 import javafx.fxml.FXML;
 import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.User;
@@ -12,12 +13,7 @@ import com.example.javafxscheduler.util.EventRegistrationUtil;
 import com.example.javafxscheduler.util.EventUtil;
 import com.example.javafxscheduler.util.UserUtil;
 import javafx.collections.FXCollections;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
-
-import java.sql.*;
+import javafx.scene.control.*;
 
 public class UserViewController {
 
@@ -51,9 +47,30 @@ public class UserViewController {
 
     public void enlist() {
 
-        //checks if the user has already been registerd for the event
+        if (courseBox.getValue() == null) {
+            return;
+        }
+
+        //checks if the user has already been registered for the event
         if (EventRegistrationUtil.userRegistered(courseBox.getValue().toString(), UserUtil.getUserId(currentUser))) {
             return;
+        }
+
+        Event[] userEvents = EventUtil.getEventsByUser(currentUser);
+        Event[] EventsByCourse = EventUtil.getEventsByCourse(courseBox.getValue().toString());
+
+        //checks if the user has already been registered for an event at the same time
+        for (Event userEvent : userEvents) {
+            for (Event eventByCourse : EventsByCourse) {
+                if (TimeUtil.dateOverlapping(userEvent.getEventDate(), eventByCourse.getEventDate()) && TimeUtil.timeOverlapping(userEvent.getEventStartTime(), userEvent.getEventEndTime(), eventByCourse.getEventStartTime(), eventByCourse.getEventEndTime())) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Overlapping events!");
+                    alert.setHeaderText("You are already registered for an event at this time!");
+                    alert.setContentText("Please choose another event or time!");
+                    alert.showAndWait();
+                    return;
+                }
+            }
         }
 
         EventRegistrationUtil.saveEventRegistration(courseBox.getValue().toString(), UserUtil.getUserId(currentUser));

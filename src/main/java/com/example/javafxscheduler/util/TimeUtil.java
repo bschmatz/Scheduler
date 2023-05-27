@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -38,6 +39,14 @@ public class TimeUtil {
         return hours;
     }
 
+    public static boolean dateOverlapping(Date date1, Date date2){
+        return date1.equals(date2);
+    }
+
+    public static boolean timeOverlapping(Time start1, Time end1, Time start2, Time end2){
+        return start1.before(end2) && end1.after(start2);
+    }
+
     public static String[] getMinutes(int start) {
         ArrayList<String> minutes;
 
@@ -65,7 +74,6 @@ public class TimeUtil {
                 minutes.add("45");
                 break;
         }
-
 
         return minutes.toArray(new String[0]);
     }

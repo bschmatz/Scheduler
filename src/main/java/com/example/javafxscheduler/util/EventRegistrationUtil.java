@@ -55,7 +55,7 @@ public class EventRegistrationUtil {
 
             PreparedStatement ps = con.prepareStatement(sql);
             ps.executeUpdate();
-            System.out.println("Event saved");
+            System.out.println("Registration saved");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +70,7 @@ public class EventRegistrationUtil {
 
             PreparedStatement ps = con.prepareStatement(sql);
             ps.executeUpdate();
-            System.out.println("Event deleted");
+            System.out.println("Registration deleted");
 
         } catch (Exception e) {
             e.printStackTrace();
