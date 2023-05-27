@@ -3,12 +3,15 @@
 <?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<DialogPane expanded="true" maxWidth="800.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane expanded="true" maxWidth="800.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxscheduler.controllers.suggestionDialogController">
 
    <buttonTypes>
       <ButtonType fx:id="connectButtonType" fx:constant="YES" />
@@ -34,6 +37,26 @@
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The Event you tried to add overlaps with an already existing event. Would you like to use the suggested times below instead?" wrappingWidth="200.0" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <GridPane alignment="CENTER" HBox.hgrow="ALWAYS">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="Current Times:" />
+                                    <Label text="Suggested Times:" GridPane.columnIndex="1" />
+                                    <Label fx:id="currentTime" text="placeholder" GridPane.rowIndex="1" />
+                                    <Label fx:id="suggestedTime" text="placeholder" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
                            </children>
                         </HBox>
                      </children>

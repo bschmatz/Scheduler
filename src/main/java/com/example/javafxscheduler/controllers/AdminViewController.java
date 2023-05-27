@@ -17,11 +17,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.Optional;
 
 
 public class AdminViewController {
@@ -54,7 +56,7 @@ public class AdminViewController {
 
     private static User user;
 
-    public void initialize(){
+    public void initialize() {
         wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
         eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
         courseField.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
@@ -65,8 +67,30 @@ public class AdminViewController {
         endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
     }
 
+    public void saveEvent(Event event){
+        for (Event e : EventUtil.getEventsByCourse(event.getEventName())) {
+            if (EventUtil.sameEvent(e, event)) {
+                suggestionDialog(e, event);
+                return;
+            }
+        }
+
+        EventUtil.saveEvent(event, user);
+
+        Wish wish;
+        if ((wish = WishUtil.getWishByEvent(event)) != null) {
+            WishUtil.deleteWish(wish);
+            int assistantId = UserUtil.getUserId(UserUtil.getUserByName(wish.getAssistant()));
+            EventRegistrationUtil.saveEventRegistration(event.getEventName(), assistantId);
+        }
+
+        wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
+
+    }
+
     public void saveEvent() {
-        if (!allFieldsFilled()){
+        if (!allFieldsFilled()) {
             return;
         }
 
@@ -79,12 +103,8 @@ public class AdminViewController {
         Event event = new Event(room, user.getUserId(), course, date, startTime, endTime);
 
         for (Event e : EventUtil.getEventsByCourse(course)) {
-            if (EventUtil.sameEvent(event, e)){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("You cannot add overlapping events!");
-                alert.setContentText("Please try adding another event.");
-                alert.setTitle("Overlapping Event");
-                alert.showAndWait();
+            if (EventUtil.sameEvent(e, event)) {
+                suggestionDialog(e, event);
                 return;
             }
 
@@ -111,10 +131,10 @@ public class AdminViewController {
         return true;
     }
 
-    public void transferData(){
+    public void transferData() {
         Wish wish = wishList.getSelectionModel().getSelectedItem();
 
-        if (wish == null){
+        if (wish == null) {
             return;
         }
 
@@ -129,15 +149,52 @@ public class AdminViewController {
 
     }
 
-        public void switchToLogin(ActionEvent e) throws IOException {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
-            root = loader.load();
-            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Login");
-            stage.show();
+    public void switchToLogin(ActionEvent e) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+        root = loader.load();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Login");
+        stage.show();
+    }
+
+    private void suggestionDialog(Event existing, Event toSave) {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("suggestionDialog.fxml"));
+            DialogPane suggestionDialogPane = loader.load();
+
+            suggestionDialogController controller = loader.getController();
+
+            //set all the necessary variables
+            controller.setExistingEnd(existing.getEventEndTime());
+            controller.setCurrentStartTime(toSave.getEventStartTime());
+            controller.setCurrentEndTime(toSave.getEventEndTime());
+            controller.updateCurrentTimes();
+            controller.updateSuggestedTimes();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(suggestionDialogPane);
+            dialog.setTitle("Overlapping Events");
+
+            Optional<ButtonType> button = dialog.showAndWait();
+
+            if (button.get() == ButtonType.YES){
+                System.out.println("Selected YES");
+                toSave.setEventStartTime(controller.getSuggestedStartTime());
+                toSave.setEventEndTime(controller.getSuggestedEndTime());
+                saveEvent(toSave);
+            }else {
+                return;
+            }
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+    }
 
 
     public void setUser(User user) {

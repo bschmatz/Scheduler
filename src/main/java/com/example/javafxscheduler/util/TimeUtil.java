@@ -5,12 +5,17 @@
 
 package com.example.javafxscheduler.util;
 
+import com.example.javafxscheduler.entities.Event;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class TimeUtil {
@@ -76,5 +81,22 @@ public class TimeUtil {
         }
 
         return minutes.toArray(new String[0]);
+    }
+
+    public static Time[] getSuggestedTimes(Time existingEnd, Time start, Time end){
+
+        LocalTime startLocal = start.toLocalTime();
+        LocalTime endLocal = end.toLocalTime();
+
+        Duration duration = Duration.between(startLocal, endLocal);
+
+        LocalTime newStart = existingEnd.toLocalTime();
+        LocalTime newEnd = newStart.plus(duration);
+
+        start = Time.valueOf(newStart);
+        end = Time.valueOf(newEnd);
+
+        Time[] suggestedTimes = {start, end};
+        return suggestedTimes;
     }
 }
