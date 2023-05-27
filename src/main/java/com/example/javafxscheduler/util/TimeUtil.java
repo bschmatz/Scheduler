@@ -38,12 +38,35 @@ public class TimeUtil {
         return hours;
     }
 
-    public static String[] getMinutes() {
-        String[] minutes = new String[4];
-        minutes[0] = "00";
-        minutes[1] = "15";
-        minutes[2] = "30";
-        minutes[3] = "45";
-        return minutes;
+    public static String[] getMinutes(int start) {
+        ArrayList<String> minutes;
+
+        switch (start){
+            case 15:
+                minutes = new ArrayList<>();
+                minutes.add("15");
+                minutes.add("30");
+                minutes.add("45");
+                break;
+            case 30:
+                minutes = new ArrayList<>();
+                minutes.add("30");
+                minutes.add("45");
+                break;
+            case 45:
+                minutes = new ArrayList<>();
+                minutes.add("45");
+                break;
+            default:
+                minutes = new ArrayList<>();
+                minutes.add("00");
+                minutes.add("15");
+                minutes.add("30");
+                minutes.add("45");
+                break;
+        }
+
+
+        return minutes.toArray(new String[0]);
     }
 }

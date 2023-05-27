@@ -7,45 +7,47 @@ package com.example.javafxscheduler.controllers;
 
 import com.example.javafxscheduler.entities.User;
 import com.example.javafxscheduler.entities.Wish;
+import com.example.javafxscheduler.util.CourseUtil;
+import com.example.javafxscheduler.util.RoomUtil;
 import com.example.javafxscheduler.util.TimeUtil;
 import com.example.javafxscheduler.util.WishUtil;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 
 import java.sql.Time;
 import java.util.Date;
 
 public class AssistantViewController {
     private User user;
-    private final int START_HOUR = 8;
+    int START_HOUR = 8;
     private final int END_HOUR = 23;
 
     @FXML
-    private ChoiceBox courseField;
+    private ChoiceBox<com.example.javafxscheduler.entities.Course> courseField;
     @FXML
-    private TextField roomField;
+    private ChoiceBox<com.example.javafxscheduler.entities.Room> roomField;
     @FXML
     private DatePicker dateField;
     @FXML
-    private ChoiceBox startHours;
+    private ChoiceBox<String> startHours;
     @FXML
-    private ChoiceBox startMinutes;
+    private ChoiceBox<String> startMinutes;
     @FXML
-    private ChoiceBox endHours;
+    private ChoiceBox<String> endHours;
     @FXML
-    private ChoiceBox endMinutes;
+    private ChoiceBox<String> endMinutes;
     @FXML
     private ListView<String> wishList;
 
     public void initialize(){
-        courseField.setItems(FXCollections.observableArrayList("Maths", "Programming", "English", "Algorithms", "Databases"));
-        startHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
-        startMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes()));
+        courseField.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
+        roomField.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
+        startHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR - 1)));
+        startMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
         endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
-        endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes()));
+        endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
     }
 
     public void submit(ActionEvent e){
@@ -66,10 +68,10 @@ public class AssistantViewController {
         }
 
         String course = courseField.getValue().toString();
-        String room = roomField.getText();
+        String room = roomField.getValue().toString();
         Date date = java.sql.Date.valueOf(dateField.getValue());
-        Time start = Time.valueOf(startHours.getValue().toString() + ":" + startMinutes.getValue().toString() + ":00");
-        Time end = Time.valueOf(endHours.getValue().toString() + ":" + endMinutes.getValue().toString() + ":00");
+        Time start = Time.valueOf(startHours.getValue() + ":" + startMinutes.getValue() + ":00");
+        Time end = Time.valueOf(endHours.getValue() + ":" + endMinutes.getValue() + ":00");
 
         Wish wish = new Wish(user.getName(), date, start, end, course, room);
         WishUtil.saveWish(wish);
@@ -77,11 +79,13 @@ public class AssistantViewController {
     }
 
     public boolean allFieldsFilled(){
-        if (startHours.getValue() == null || startMinutes.getValue() == null || endHours.getValue() == null || endMinutes.getValue() == null || courseField.getValue() == null || dateField.getValue() == null || roomField.getText().isEmpty()){
-            return false;
-        }
-
-        return true;
+        return startHours.getValue() != null
+                && startMinutes.getValue() != null
+                && endHours.getValue() != null
+                && endMinutes.getValue() != null
+                && courseField.getValue() != null
+                && dateField.getValue() != null
+                && roomField.getValue() != null;
     }
 
     public boolean validDate(){
@@ -92,18 +96,33 @@ public class AssistantViewController {
         return true;
     }
 
-    public void timeCheck(MouseEvent e){
-        endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(Integer.parseInt(startHours.getValue().toString()), END_HOUR)));
+    //checks the times and adjusts the options accordingly
+    public void checkTimes(){
+        if (startHours.getValue() != null){
+            endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(Integer.parseInt(startHours.getValue()), END_HOUR)));
+        }
+
+        checkMinutes();
     }
 
-    public void minuteCheck(MouseEvent e){
-        if (endHours.getValue() == null){
-            return;
-        } else if (Integer.parseInt((String) endHours.getValue()) == END_HOUR){
+    public void checkMinutes(){
+
+        if (endHours.getValue() != null && Integer.parseInt(endHours.getValue()) == END_HOUR){
             endMinutes.setItems(FXCollections.observableArrayList("00"));
-        }else {
-            endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes()));
         }
+
+        if (startMinutes.getValue() != null){
+
+            if (startHours.getValue().equals(endHours.getValue())){
+                endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(Integer.parseInt(startMinutes.getValue()))));
+            } else {
+                endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
+            }
+
+
+        }
+
+
     }
 
     //refreshes the list of wishes when the tab is changed in JavaFX
@@ -111,7 +130,7 @@ public class AssistantViewController {
         wishList.setItems(FXCollections.observableArrayList(WishUtil.observableList(WishUtil.getWishesByName(user.getName()))));
     }
 
-    public void printWish(MouseEvent e){
+    public void printWish(){
         System.out.println(wishList.getSelectionModel().getSelectedItem());
     }
 

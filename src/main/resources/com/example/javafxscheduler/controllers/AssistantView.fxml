@@ -8,7 +8,6 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -51,11 +50,7 @@
                                     <Insets bottom="2.0" top="2.0" />
                                  </padding>
                               </Label>
-                              <TextField fx:id="roomField" alignment="CENTER">
-                                 <VBox.margin>
-                                    <Insets bottom="2.0" left="50.0" right="50.0" top="2.0" />
-                                 </VBox.margin>
-                              </TextField>
+                              <ChoiceBox fx:id="roomField" prefWidth="150.0" />
                               <Label text="Date">
                                  <font>
                                     <Font size="16.0" />
@@ -84,13 +79,13 @@
                                        </HBox.margin>
                                     </ChoiceBox>
                                     <Label text="-" />
-                                    <ChoiceBox fx:id="endHours" onMouseClicked="#timeCheck" prefWidth="150.0">
+                                    <ChoiceBox fx:id="endHours" onMouseClicked="#checkTimes" prefWidth="150.0">
                                        <HBox.margin>
                                           <Insets left="5.0" right="5.0" />
                                        </HBox.margin>
                                     </ChoiceBox>
                                     <Label text=":" />
-                                    <ChoiceBox fx:id="endMinutes" onMouseClicked="#minuteCheck" prefWidth="150.0">
+                                    <ChoiceBox fx:id="endMinutes" onMouseClicked="#checkMinutes" prefWidth="150.0">
                                        <HBox.margin>
                                           <Insets left="5.0" right="5.0" />
                                        </HBox.margin>

@@ -10,7 +10,6 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -55,14 +54,6 @@
                                     <Insets />
                                  </GridPane.margin>
                               </DatePicker>
-                              <TextField fx:id="eventRoom" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
-                                 <GridPane.margin>
-                                    <Insets bottom="4.0" left="8.0" right="8.0" top="4.0" />
-                                 </GridPane.margin>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </TextField>
                               <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                  <GridPane.margin>
                                     <Insets left="4.0" right="4.0" />
@@ -94,6 +85,7 @@
                                     <Font size="14.0" />
                                  </font></Label>
                               <ChoiceBox fx:id="courseField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ChoiceBox fx:id="roomField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                         <HBox alignment="CENTER">

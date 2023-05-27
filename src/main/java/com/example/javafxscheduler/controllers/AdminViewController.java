@@ -30,21 +30,21 @@ import java.sql.Time;
 public class AdminViewController {
 
     @FXML
-    ChoiceBox courseField;
+    private ChoiceBox courseField;
     @FXML
-    DatePicker eventDate;
+    private DatePicker eventDate;
     @FXML
-    TextField eventRoom;
+    private ChoiceBox roomField;
     @FXML
-    ChoiceBox startHours;
+    private ChoiceBox startHours;
     @FXML
-    ChoiceBox startMinutes;
+    private ChoiceBox startMinutes;
     @FXML
-    ChoiceBox endHours;
+    private ChoiceBox endHours;
     @FXML
-    ChoiceBox endMinutes;
+    private ChoiceBox endMinutes;
     @FXML
-    ListView<Wish> wishList;
+    private ListView<Wish> wishList;
 
     private Stage stage;
     private Parent root;
@@ -57,11 +57,12 @@ public class AdminViewController {
 
     public void initialize(){
         wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
-        courseField.setItems(FXCollections.observableArrayList("Maths", "Programming", "English", "Algorithms", "Databases"));
+        courseField.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
+        roomField.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
         startHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
-        startMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes()));
+        startMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
         endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
-        endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes()));
+        endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
     }
 
     public void saveEvent() {
@@ -73,7 +74,7 @@ public class AdminViewController {
         Date date = Date.valueOf(eventDate.getValue());
         Time startTime = Time.valueOf(startHours.getValue().toString() + ":" + startMinutes.getValue().toString() + ":00");
         Time endTime = Time.valueOf(endHours.getValue().toString() + ":" + endMinutes.getValue().toString() + ":00");
-        String room = eventRoom.getText();
+        String room = roomField.getValue().toString();
 
         Event event = new Event(room, user.getUserId(), course, date, startTime, endTime);
 
@@ -91,7 +92,7 @@ public class AdminViewController {
     }
 
     private boolean allFieldsFilled() {
-        if (courseField.getValue() == null || eventDate.getValue() == null || eventRoom.getText().isEmpty() || startHours.getValue() == null || startMinutes.getValue() == null || endHours.getValue() == null || endMinutes.getValue() == null) {
+        if (courseField.getValue() == null || eventDate.getValue() == null || roomField.getValue() == null || startHours.getValue() == null || startMinutes.getValue() == null || endHours.getValue() == null || endMinutes.getValue() == null) {
             return false;
         }
         return true;
@@ -107,7 +108,7 @@ public class AdminViewController {
         courseField.setValue(wish.getCourse());
         Date date = (Date) wish.getDate();
         eventDate.setValue(date.toLocalDate());
-        eventRoom.setText(wish.getRoom());
+        roomField.setValue(wish.getRoom());
         startHours.setValue(wish.getStartTime().toLocalTime().getHour());
         startMinutes.setValue(wish.getStartTime().toLocalTime().getMinute());
         endHours.setValue(wish.getEndTime().toLocalTime().getHour());
