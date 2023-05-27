@@ -5,11 +5,13 @@
 
 package com.example.javafxscheduler.entities;
 
+import com.example.javafxscheduler.util.TimeUtil;
+
 import java.sql.Date;
 import java.sql.Time;
 
 
-public class Event {
+public class Event{
 
     private int eventId;
 
@@ -97,4 +99,5 @@ public class Event {
     public String toString() {
         return eventName + " | " + eventDate + " | " + eventStartTime + " - " + eventEndTime + " | " + roomName;
     }
+
 }

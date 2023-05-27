@@ -26,7 +26,22 @@
                <children>
                   <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
                      <content>
-                        <ListView fx:id="wishList" onMouseClicked="#transferData" />
+                        <HBox>
+                           <children>
+                              <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Wishes" />
+                                    <ListView fx:id="wishList" onMouseClicked="#transferData" VBox.vgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Events" VBox.vgrow="ALWAYS" />
+                                    <ListView fx:id="eventList" VBox.vgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
                      </content>
                   </ScrollPane>
                   <VBox alignment="CENTER" HBox.hgrow="ALWAYS">

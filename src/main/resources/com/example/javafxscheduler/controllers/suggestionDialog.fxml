@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<DialogPane expanded="true" maxWidth="800.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+
+   <buttonTypes>
+      <ButtonType fx:id="connectButtonType" fx:constant="YES" />
+      <ButtonType fx:constant="NO" />
+   </buttonTypes>
+   <content>
+      <HBox alignment="CENTER" prefWidth="500.0">
+         <children>
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox alignment="CENTER" minHeight="20.0" />
+                  <VBox fx:id="mainContent" prefHeight="200.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <Label text="Error: Overlapping Event">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The Event you tried to add overlaps with an already existing event. Would you like to use the suggested times below instead?" wrappingWidth="200.0" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox minHeight="20.0" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </content>
+
+</DialogPane>

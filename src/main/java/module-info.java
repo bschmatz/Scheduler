@@ -8,5 +8,6 @@ open module com.example.javafxscheduler {
 
     exports com.example.javafxscheduler;
     exports com.example.javafxscheduler.controllers;
+    exports com.example.javafxscheduler.util;
 
 }

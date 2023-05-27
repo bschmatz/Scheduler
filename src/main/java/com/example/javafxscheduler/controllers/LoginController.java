@@ -7,6 +7,7 @@ package com.example.javafxscheduler.controllers;
 
 import com.example.javafxscheduler.entities.User;
 import com.example.javafxscheduler.util.UserUtil;
+import com.example.javafxscheduler.util.UserViewController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

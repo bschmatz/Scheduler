@@ -3,7 +3,7 @@
 //Author: Benedikt Schmatz
 //Last changed: 26.05.2023
 
-package com.example.javafxscheduler.controllers;
+package com.example.javafxscheduler.util;
 
 import com.example.javafxscheduler.util.TimeUtil;
 import javafx.fxml.FXML;

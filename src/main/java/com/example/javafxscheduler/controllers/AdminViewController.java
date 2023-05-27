@@ -16,10 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -45,6 +42,8 @@ public class AdminViewController {
     private ChoiceBox endMinutes;
     @FXML
     private ListView<Wish> wishList;
+    @FXML
+    private ListView<Event> eventList;
 
     private Stage stage;
     private Parent root;
@@ -57,6 +56,7 @@ public class AdminViewController {
 
     public void initialize(){
         wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
         courseField.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
         roomField.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
         startHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
@@ -78,6 +78,18 @@ public class AdminViewController {
 
         Event event = new Event(room, user.getUserId(), course, date, startTime, endTime);
 
+        for (Event e : EventUtil.getEventsByCourse(course)) {
+            if (EventUtil.sameEvent(event, e)){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("You cannot add overlapping events!");
+                alert.setContentText("Please try adding another event.");
+                alert.setTitle("Overlapping Event");
+                alert.showAndWait();
+                return;
+            }
+
+        }
+
         EventUtil.saveEvent(event, user);
 
         Wish wish;
@@ -88,6 +100,7 @@ public class AdminViewController {
         }
 
         wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
 
     }
 

@@ -43,12 +43,6 @@ public class EventUtil {
         }
     }
 
-    public static ObservableList<String> observableList(String[] events) {
-        ObservableList<String> observableList = javafx.collections.FXCollections.observableArrayList();
-        observableList.addAll(Arrays.asList(events));
-        return observableList;
-    }
-
     public static Event[] getEventsByUser(User user){
         ArrayList<Event> events = new ArrayList<>();
 
@@ -92,6 +86,45 @@ public class EventUtil {
         }
 
         return events.toArray(new Event[0]);
+    }
+
+    public static Event[] getAllEvents() {
+        ArrayList<Event> events = new ArrayList<>();
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "SELECT * FROM EVENTS ORDER BY event_date ASC";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                Event event = new Event(rs.getString("event_room"), 0, rs.getString("event_name"), rs.getDate("event_date"), rs.getTime("event_start_time"), rs.getTime("event_end_time"));
+                events.add(event);
+            }
+
+        }catch (Exception e){
+            System.out.println("Connection failed");
+            e.printStackTrace();
+        }
+
+        return events.toArray(new Event[0]);
+    }
+
+    public static boolean sameEvent(Event eventOne, Event eventTwo){
+        Date oneDate = eventOne.getEventDate();
+        Date twoDate = eventTwo.getEventDate();
+        Time oneStart = eventOne.getEventStartTime();
+        Time oneEnd= eventOne.getEventEndTime();
+        Time twoStart = eventTwo.getEventStartTime();
+        Time twoEnd = eventTwo.getEventEndTime();
+
+        if (TimeUtil.dateOverlapping(oneDate, twoDate) && TimeUtil.timeOverlapping(oneStart, oneEnd, twoStart, twoEnd)){
+            return true;
+        }
+
+        return false;
+
+
     }
 
 }
