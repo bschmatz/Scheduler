@@ -65,4 +65,19 @@ public class EventRegistrationUtil {
 
         }
     }
+
+    public static void deleteAllEventRegistations(String courseName){
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "DELETE FROM event_registrations WHERE event_name = '" + courseName + "'";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("All registrations for " + courseName + " deleted");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
 }

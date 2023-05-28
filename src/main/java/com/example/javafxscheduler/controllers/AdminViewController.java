@@ -62,6 +62,12 @@ public class AdminViewController {
     @FXML
     private ChoiceBox<String> wishEndMinutes;
 
+    //FIELDS FOR THE ADD-VIEW
+    @FXML
+    private ListView<Course> courseList;
+    @FXML
+    private ListView<Room> roomList;
+
     private final int START_HOUR = 8;
     private final int END_HOUR = 23;
     private String tab = "Admin";
@@ -86,6 +92,10 @@ public class AdminViewController {
         wishStartMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
         wishEndHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
         wishEndMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
+
+        //INITIALIZE FIELDS FOR THE ADD-VIEW
+        courseList.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
+        roomList.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
     }
 
     public void setUser(User user) {
@@ -98,6 +108,12 @@ public class AdminViewController {
 
     public void switchToAssistantTab() {
         tab = "Assistant";
+        refreshElements();
+    }
+
+    public void switchToAddTab() {
+        tab = "Add";
+        refreshElements();
     }
 
     private boolean allAdminFieldsFilled() {
@@ -110,9 +126,14 @@ public class AdminViewController {
                 && endMinutes.getValue() != null;
     }
 
+    @FXML
     public void saveEvent() {
 
         if (!allAdminFieldsFilled()) {
+            notAllFieldsError();
+            return;
+        } else if (!TimeUtil.validDate(eventDate.getValue())) {
+            invalidDateError();
             return;
         }
 
@@ -149,13 +170,13 @@ public class AdminViewController {
             EventRegistrationUtil.saveEventRegistration(course, assistantId);
         }
 
-        refreshLists();
+        refreshElements();
 
     }
 
     //almost the same method as above, but used for recursive calling if another timeslot has to be found again
     //preserves the wish
-    public void saveEvent(Event event, Wish wish){
+    public void saveEvent(Event event, Wish wish) {
 
         for (Event e : EventUtil.getEventsByRoom(event.getEventRoom().getRoomName())) {
             if (EventUtil.eventsOverlap(e, event)) {
@@ -166,7 +187,7 @@ public class AdminViewController {
 
         EventUtil.saveEvent(event, user);
 
-        if (wish != null){
+        if (wish != null) {
             Notification notification = new Notification(wish, event);
 
             WishUtil.deleteWish(wish);
@@ -175,14 +196,18 @@ public class AdminViewController {
             EventRegistrationUtil.saveEventRegistration(event.getEventName(), assistantId);
         }
 
-        refreshLists();
+        refreshElements();
 
     }
 
     //used to refresh the data within a list
-    private void refreshLists() {
+    private void refreshElements() {
         wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
         eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
+        courseList.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
+        roomList.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
+        roomField.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
+        wishRoom.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
     }
 
     //when a list item is clicked, the data is transferred to the fields
@@ -218,10 +243,10 @@ public class AdminViewController {
     private void suggestionDialog(Event existing, Event toSave, Wish wish) {
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("suggestionDialog.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SuggestionDialog.fxml"));
             DialogPane suggestionDialogPane = loader.load();
 
-            suggestionDialogController controller = loader.getController();
+            SuggestionDialogController controller = loader.getController();
 
             //set all the necessary variables
             controller.setExistingEnd(existing.getEventEndTime());
@@ -237,7 +262,7 @@ public class AdminViewController {
             Optional<ButtonType> button = dialog.showAndWait();
 
             //if the user accepts the suggestion, save the event, otherwise delete the wish
-            if (button.get() == ButtonType.YES){
+            if (button.get() == ButtonType.YES) {
                 System.out.println("Selected YES");
                 toSave.setEventStartTime(controller.getSuggestedStartTime());
                 toSave.setEventEndTime(controller.getSuggestedEndTime());
@@ -255,31 +280,23 @@ public class AdminViewController {
     }
 
     //METHODS USED FOR THE ASSISTANT VIEW
-    public void submit(ActionEvent e) throws IOException {
+    public void submit(ActionEvent e) {
         Wish wish = createWishFromFields();
 
-        if (wish == null){
+        if (wish == null) {
             return;
         }
 
         WishUtil.saveWish(wish);
-        refreshLists();
+        refreshElements();
     }
 
-    private Wish createWishFromFields(){
-        if (!allAssistantFieldsFilled()){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("Not all fields filled out");
-            alert.setContentText("Please fill out all fields before submitting");
-            alert.showAndWait();
+    private Wish createWishFromFields() {
+        if (!allAssistantFieldsFilled()) {
+            notAllFieldsError();
             return null;
-        } else if (!TimeUtil.validDate(wishDate.getValue())){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("Invalid date");
-            alert.setContentText("Please enter a date after today");
-            alert.showAndWait();
+        } else if (!TimeUtil.validDate(wishDate.getValue())) {
+            invalidDateError();
             return null;
         }
 
@@ -292,7 +309,7 @@ public class AdminViewController {
         return new Wish(user.getName(), date, start, end, course, room);
     }
 
-    private boolean allAssistantFieldsFilled(){
+    private boolean allAssistantFieldsFilled() {
         return wishCourse.getValue() != null
                 && wishDate.getValue() != null
                 && wishRoom.getValue() != null
@@ -303,19 +320,19 @@ public class AdminViewController {
     }
 
     //checks the wishTimes from start to and adjusts the list items accordingly
-    public void refreshTime(MouseEvent e){
+    public void refreshTime(MouseEvent e) {
 
         //change the end time list items according to the current tab and the start time
-        if (tab.equals("Admin")){
-            if (startHours.getValue() == null){
+        if (tab.equals("Admin")) {
+            if (startHours.getValue() == null) {
                 return;
             }
 
             endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(Integer.parseInt(startHours.getValue()), END_HOUR)));
 
 
-        } else if (tab.equals("Assistant")){
-            if (wishStartHours.getValue() == null){
+        } else if (tab.equals("Assistant")) {
+            if (wishStartHours.getValue() == null) {
                 return;
             }
 
@@ -323,27 +340,27 @@ public class AdminViewController {
         }
     }
 
-    public void checkMinutes(MouseEvent e){
+    public void checkMinutes(MouseEvent e) {
 
-        if (tab.equals("Admin")){
+        if (tab.equals("Admin")) {
 
-            if (startMinutes.getValue() == null){
+            if (startMinutes.getValue() == null) {
                 return;
             }
 
-            if (startHours.getValue().equals(endHours.getValue())){
+            if (startHours.getValue().equals(endHours.getValue())) {
                 endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(Integer.parseInt(startMinutes.getValue()))));
             } else {
                 endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
             }
 
 
-        } else if (tab.equals("Assistant")){
-            if (wishStartMinutes.getValue() == null){
+        } else if (tab.equals("Assistant")) {
+            if (wishStartMinutes.getValue() == null) {
                 return;
             }
 
-            if (wishStartHours.getValue().equals(wishEndHours.getValue())){
+            if (wishStartHours.getValue().equals(wishEndHours.getValue())) {
                 wishEndMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(Integer.parseInt(wishStartMinutes.getValue()))));
             } else {
                 wishEndMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
@@ -351,5 +368,85 @@ public class AdminViewController {
         }
     }
 
+    public void addCourseOrEvent(ActionEvent e) {
+        addDialog();
+    }
+
+    public void editCourseOrEvent(ActionEvent e) {
+
+    }
+
+    public void deleteCourseOrEvent(ActionEvent e) {
+        deleteDialog();
+    }
+
+    private void addDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddDialog.fxml"));
+            DialogPane addDialogPane = loader.load();
+
+            AddDialogController controller = loader.getController();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(addDialogPane);
+            dialog.setTitle("Add");
+
+            Optional<ButtonType> button = dialog.showAndWait();
+
+            if (button.get() == ButtonType.OK) {
+                controller.save();
+                refreshElements();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void deleteDialog() {
+        Course course;
+        Room room;
+
+        if ((room = roomList.getSelectionModel().getSelectedItem()) != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete");
+            alert.setHeaderText("Delete room");
+            alert.setContentText("Are you sure you want to delete this room?");
+            Optional<ButtonType> button = alert.showAndWait();
+
+            if (button.get() == ButtonType.OK) {
+                RoomUtil.deleteRoom(room);
+                refreshElements();
+            }
+        } else if ((course = courseList.getSelectionModel().getSelectedItem()) != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete");
+            alert.setHeaderText("Delete course");
+            alert.setContentText("Are you sure you want to delete this course?");
+            Optional<ButtonType> button = alert.showAndWait();
+
+            if (button.get() == ButtonType.OK) {
+                CourseUtil.deleteCourse(course);
+                refreshElements();
+            }
+        }
+
+    }
+
+    private void notAllFieldsError() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Error");
+        alert.setHeaderText("Not all fields filled out");
+        alert.setContentText("Please fill out all fields before submitting");
+        alert.showAndWait();
+    }
+
+    private void invalidDateError() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Error");
+        alert.setHeaderText("Invalid date");
+        alert.setContentText("Please enter a date after today");
+        alert.showAndWait();
+    }
 
 }

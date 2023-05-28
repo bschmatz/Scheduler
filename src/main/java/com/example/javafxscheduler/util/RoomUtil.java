@@ -5,7 +5,9 @@
 
 package com.example.javafxscheduler.util;
 
+import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.Room;
+import com.example.javafxscheduler.entities.Wish;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +16,40 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class RoomUtil {
+
+    public static void saveRoom(Room room){
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "INSERT INTO rooms (room_name) VALUES ('" + room.getRoomName() + "')";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("Room saved");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    public static void deleteRoom(Room room){
+        EventUtil.deleteEventsByRoom(room);
+        WishUtil.deleteWishesByRoom(room);
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "DELETE FROM rooms WHERE room_name = '" + room.getRoomName() + "'";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("Room deleted");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
 
     public static Room[] getAllRooms(){
         ArrayList<Room> rooms = new ArrayList<>();

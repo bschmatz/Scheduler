@@ -10,6 +10,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -224,6 +225,81 @@
                   </VBox>
                </children>
             </VBox>
+         </content>
+      </Tab>
+      <Tab onSelectionChanged="#switchToAddTab" text="Edit courses and rooms">
+         <content>
+            <HBox alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER" maxWidth="50.0" HBox.hgrow="ALWAYS" />
+                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                     <children>
+                        <VBox alignment="CENTER" maxHeight="50.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label text="Edit courses and rooms">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                           <children>
+                              <GridPane alignment="CENTER" VBox.vgrow="ALWAYS">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="Courses">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <Label text="Rooms" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <ListView fx:id="courseList" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+                                    <ListView fx:id="roomList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                        <VBox maxHeight="50.0" />
+                     </children>
+                  </VBox>
+                  <HBox alignment="CENTER" maxWidth="50.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <ToolBar nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL">
+                          <items>
+                            <Button mnemonicParsing="false" onAction="#addCourseOrEvent" text="Add">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#editCourseOrEvent" text="Edit">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#deleteCourseOrEvent" text="Delete">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                          </items>
+                        </ToolBar>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
          </content>
       </Tab>
    </tabs>

@@ -6,9 +6,18 @@
 package com.example.javafxscheduler.entities;
 
 public class Course {
+    private int courseId;
     private String courseName;
 
     public Course() {
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public int getCourseId() {
+        return courseId;
     }
 
     public Course(String courseName) {

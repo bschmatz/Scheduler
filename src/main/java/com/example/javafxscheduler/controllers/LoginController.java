@@ -99,6 +99,7 @@ public class LoginController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("MySchedule");
+        stage.centerOnScreen();
         stage.show();
     }
 
@@ -113,6 +114,7 @@ public class LoginController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("AdminView");
+        stage.centerOnScreen();
         stage.show();
     }
 
@@ -127,6 +129,7 @@ public class LoginController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("AssistantView");
+        stage.centerOnScreen();
         stage.show();
     }
 }

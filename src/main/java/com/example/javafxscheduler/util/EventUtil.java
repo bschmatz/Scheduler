@@ -5,6 +5,7 @@
 
 package com.example.javafxscheduler.util;
 
+import com.example.javafxscheduler.entities.Course;
 import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.Room;
 import com.example.javafxscheduler.entities.User;
@@ -35,6 +36,32 @@ public class EventUtil {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.executeUpdate();
             System.out.println("Event saved");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteEventsByCourse(Course course){
+        try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "DELETE FROM events WHERE event_name = '" + course.getCourseName() + "'";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("Events deleted");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteEventsByRoom(Room room){
+        try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "DELETE FROM events WHERE event_room = '" + room.getRoomName() + "'";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("Events deleted");
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -59,6 +59,32 @@ public class WishUtil {
 
     }
 
+    public static void deleteWishesByRoom(Room room){
+        try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "DELETE FROM wishes WHERE room = '" + room.getRoomName() + "'";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("Wishes deleted");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteWishByCourse(Course course){
+        try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+
+            String sql = "DELETE FROM wishes WHERE event_name = '" + course.getCourseName() + "'";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("Wishes deleted");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Wish getWishByEvent(Event e){
         Wish wish = null;
 
@@ -118,8 +144,6 @@ public class WishUtil {
             System.out.println("Connection failed");
             e.printStackTrace();
         }
-
-        System.out.println(wishes);
 
         return wishes.toArray(new Wish[0]);
     }

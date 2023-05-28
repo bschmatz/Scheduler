@@ -11,7 +11,7 @@ import javafx.scene.control.Label;
 
 import java.sql.Time;
 
-public class suggestionDialogController {
+public class SuggestionDialogController {
 
     @FXML
     private Label currentTime;

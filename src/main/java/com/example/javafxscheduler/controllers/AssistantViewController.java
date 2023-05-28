@@ -10,8 +10,13 @@ import com.example.javafxscheduler.util.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Time;
@@ -56,18 +61,10 @@ public class AssistantViewController {
 
     private Wish createWishFromFields(){
         if (!allFieldsFilled()){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("Not all fields filled out");
-            alert.setContentText("Please fill out all fields before submitting");
-            alert.showAndWait();
+            notAllFieldsError();
             return null;
-        } else if (TimeUtil.validDate(dateField.getValue())){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("Invalid date");
-            alert.setContentText("Please enter a date after today");
-            alert.showAndWait();
+        } else if (!TimeUtil.validDate(dateField.getValue())){
+            invalidDateError();
             return null;
         }
 
@@ -127,11 +124,33 @@ public class AssistantViewController {
         wishList.setItems(FXCollections.observableArrayList(WishUtil.observableList(WishUtil.getWishesByName(user.getName()))));
     }
 
-    public void printWish(){
-        System.out.println(wishList.getSelectionModel().getSelectedItem());
+    public void switchToLogin(ActionEvent e) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Login");
+        stage.centerOnScreen();
+        stage.show();
     }
 
 
+    private void notAllFieldsError() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Error");
+        alert.setHeaderText("Not all fields filled out");
+        alert.setContentText("Please fill out all fields before submitting");
+        alert.showAndWait();
+    }
+
+    private void invalidDateError() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Error");
+        alert.setHeaderText("Invalid date");
+        alert.setContentText("Please enter a date after today");
+        alert.showAndWait();
+    }
 
 
 }

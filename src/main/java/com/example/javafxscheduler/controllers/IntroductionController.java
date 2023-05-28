@@ -25,6 +25,7 @@ public class IntroductionController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Login");
+        stage.centerOnScreen();
         stage.show();
     }
 
@@ -34,6 +35,7 @@ public class IntroductionController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Register");
+        stage.centerOnScreen();
         stage.show();
     }
 

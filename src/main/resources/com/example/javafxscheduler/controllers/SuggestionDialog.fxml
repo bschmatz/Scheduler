@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<DialogPane expanded="true" maxWidth="800.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxscheduler.controllers.suggestionDialogController">
+<DialogPane expanded="true" maxWidth="800.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxscheduler.controllers.SuggestionDialogController">
 
    <buttonTypes>
       <ButtonType fx:id="connectButtonType" fx:constant="YES" />
@@ -36,7 +36,10 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The Event you tried to add overlaps with an already existing event. Would you like to use the suggested times below instead?" wrappingWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The Event you tried to add overlaps with an already existing event. Would you like to use the suggested times below instead?" wrappingWidth="400.0" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></Text>
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
@@ -51,10 +54,22 @@
                                   <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
                                 </rowConstraints>
                                  <children>
-                                    <Label text="Current Times:" />
-                                    <Label text="Suggested Times:" GridPane.columnIndex="1" />
-                                    <Label fx:id="currentTime" text="placeholder" GridPane.rowIndex="1" />
-                                    <Label fx:id="suggestedTime" text="placeholder" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label text="Current Times:">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font></Label>
+                                    <Label text="Suggested Times:" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font></Label>
+                                    <Label fx:id="currentTime" text="placeholder" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font></Label>
+                                    <Label fx:id="suggestedTime" text="placeholder" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font></Label>
                                  </children>
                               </GridPane>
                            </children>
