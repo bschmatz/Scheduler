@@ -1,9 +1,11 @@
 //User.java
 //This class represents the user entity in the database
 //Author: Benedikt Schmatz
-//Last changed: 19.05.2023
+//Last changed: 28.05.2023
 
 package com.example.javafxscheduler.entities;
+
+import java.util.Objects;
 
 public class User {
 
@@ -25,6 +27,11 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
     }
 
 
@@ -71,15 +78,14 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         User user = (User) o;
 
-        if (userId != user.userId) return false;
-        if (name != null ? !name.equals(user.name) : user.name != null) return false;
-        if (email != null ? !email.equals(user.email) : user.email != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        if (role != null ? !role.equals(user.role) : user.role != null) return false;
+        if (!Objects.equals(name, user.name)) return false;
+        if (!Objects.equals(email, user.email)) return false;
+        if (!Objects.equals(password, user.password)) return false;
+        if (!Objects.equals(role, user.role)) return false;
 
         return true;
     }

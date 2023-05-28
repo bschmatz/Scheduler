@@ -1,13 +1,11 @@
 //AdminViewController.java
 //This class handles the admin view, where admins can create new events
 //Author: Benedikt Schmatz
-//Last changed: 26.05.2023
+//Last changed: 28.05.2023
 
 package com.example.javafxscheduler.controllers;
 
-import com.example.javafxscheduler.entities.Event;
-import com.example.javafxscheduler.entities.User;
-import com.example.javafxscheduler.entities.Wish;
+import com.example.javafxscheduler.entities.*;
 import com.example.javafxscheduler.util.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -17,7 +15,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -29,32 +26,28 @@ import java.util.Optional;
 public class AdminViewController {
 
     @FXML
-    private ChoiceBox courseField;
+    private ChoiceBox<Course> courseField;
     @FXML
     private DatePicker eventDate;
     @FXML
-    private ChoiceBox roomField;
+    private ChoiceBox<Room> roomField;
     @FXML
-    private ChoiceBox startHours;
+    private ChoiceBox<String> startHours;
     @FXML
-    private ChoiceBox startMinutes;
+    private ChoiceBox<String> startMinutes;
     @FXML
-    private ChoiceBox endHours;
+    private ChoiceBox<String> endHours;
     @FXML
-    private ChoiceBox endMinutes;
+    private ChoiceBox<String> endMinutes;
     @FXML
     private ListView<Wish> wishList;
     @FXML
     private ListView<Event> eventList;
 
-    private Stage stage;
-    private Parent root;
-    private Scene scene;
-
     private final int START_HOUR = 8;
     private final int END_HOUR = 23;
 
-    private static User user;
+    private User user;
 
     public void initialize() {
         wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
@@ -67,44 +60,27 @@ public class AdminViewController {
         endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
     }
 
-    public void saveEvent(Event event){
-        for (Event e : EventUtil.getEventsByCourse(event.getEventName())) {
-            if (EventUtil.sameEvent(e, event)) {
-                suggestionDialog(e, event);
-                return;
-            }
-        }
 
-        EventUtil.saveEvent(event, user);
-
-        Wish wish;
-        if ((wish = WishUtil.getWishByEvent(event)) != null) {
-            WishUtil.deleteWish(wish);
-            int assistantId = UserUtil.getUserId(UserUtil.getUserByName(wish.getAssistant()));
-            EventRegistrationUtil.saveEventRegistration(event.getEventName(), assistantId);
-        }
-
-        wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
-        eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
-
-    }
 
     public void saveEvent() {
+
         if (!allFieldsFilled()) {
             return;
         }
 
         String course = courseField.getValue().toString();
         Date date = Date.valueOf(eventDate.getValue());
-        Time startTime = Time.valueOf(startHours.getValue().toString() + ":" + startMinutes.getValue().toString() + ":00");
-        Time endTime = Time.valueOf(endHours.getValue().toString() + ":" + endMinutes.getValue().toString() + ":00");
-        String room = roomField.getValue().toString();
+        Time startTime = Time.valueOf(startHours.getValue() + ":" + startMinutes.getValue() + ":00");
+        Time endTime = Time.valueOf(endHours.getValue() + ":" + endMinutes.getValue() + ":00");
+        Room room = roomField.getValue();
 
         Event event = new Event(room, user.getUserId(), course, date, startTime, endTime);
 
-        for (Event e : EventUtil.getEventsByCourse(course)) {
+        Wish wish;
+        wish = WishUtil.getWishByEvent(event);
+        for (Event e : EventUtil.getEventsByRoom(event.getEventRoom().getRoomName())) {
             if (EventUtil.sameEvent(e, event)) {
-                suggestionDialog(e, event);
+                suggestionDialog(e, event, wish);
                 return;
             }
 
@@ -112,23 +88,54 @@ public class AdminViewController {
 
         EventUtil.saveEvent(event, user);
 
-        Wish wish;
-        if ((wish = WishUtil.getWishByEvent(event)) != null) {
+
+        if (wish != null) {
             WishUtil.deleteWish(wish);
             int assistantId = UserUtil.getUserId(UserUtil.getUserByName(wish.getAssistant()));
             EventRegistrationUtil.saveEventRegistration(course, assistantId);
         }
 
-        wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
-        eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
+        refreshLists();
+
+    }
+
+    public void saveEvent(Event event, Wish wish){
+
+        for (Event e : EventUtil.getEventsByRoom(event.getEventRoom().getRoomName())) {
+            if (EventUtil.sameEvent(e, event)) {
+                suggestionDialog(e, event, wish);
+                return;
+            }
+        }
+
+        EventUtil.saveEvent(event, user);
+
+        if (wish != null){
+            Notification notification = new Notification(wish, event);
+
+            WishUtil.deleteWish(wish);
+            NotificationUtil.saveNotification(notification);
+            int assistantId = UserUtil.getUserId(UserUtil.getUserByName(wish.getAssistant()));
+            EventRegistrationUtil.saveEventRegistration(event.getEventName(), assistantId);
+        }
+
+        refreshLists();
 
     }
 
     private boolean allFieldsFilled() {
-        if (courseField.getValue() == null || eventDate.getValue() == null || roomField.getValue() == null || startHours.getValue() == null || startMinutes.getValue() == null || endHours.getValue() == null || endMinutes.getValue() == null) {
-            return false;
-        }
-        return true;
+        return courseField.getValue() != null
+                && eventDate.getValue() != null
+                && roomField.getValue() != null
+                && startHours.getValue() != null
+                && startMinutes.getValue() != null
+                && endHours.getValue() != null
+                && endMinutes.getValue() != null;
+    }
+
+    private void refreshLists() {
+        wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
     }
 
     public void transferData() {
@@ -139,27 +146,27 @@ public class AdminViewController {
         }
 
         courseField.setValue(wish.getCourse());
-        Date date = (Date) wish.getDate();
+        Date date = wish.getDate();
         eventDate.setValue(date.toLocalDate());
         roomField.setValue(wish.getRoom());
-        startHours.setValue(wish.getStartTime().toLocalTime().getHour());
-        startMinutes.setValue(wish.getStartTime().toLocalTime().getMinute());
-        endHours.setValue(wish.getEndTime().toLocalTime().getHour());
-        endMinutes.setValue(wish.getEndTime().toLocalTime().getMinute());
+        startHours.setValue(String.valueOf(wish.getStartTime().toLocalTime().getHour()));
+        startMinutes.setValue(String.valueOf(wish.getStartTime().toLocalTime().getMinute()));
+        endHours.setValue(String.valueOf(wish.getEndTime().toLocalTime().getHour()));
+        endMinutes.setValue(String.valueOf(wish.getEndTime().toLocalTime().getMinute()));
 
     }
 
     public void switchToLogin(ActionEvent e) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
-        root = loader.load();
-        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Login");
         stage.show();
     }
 
-    private void suggestionDialog(Event existing, Event toSave) {
+    private void suggestionDialog(Event existing, Event toSave, Wish wish) {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("suggestionDialog.fxml"));
@@ -184,9 +191,9 @@ public class AdminViewController {
                 System.out.println("Selected YES");
                 toSave.setEventStartTime(controller.getSuggestedStartTime());
                 toSave.setEventEndTime(controller.getSuggestedEndTime());
-                saveEvent(toSave);
-            }else {
-                return;
+                saveEvent(toSave, wish);
+            } else if (button.get() == ButtonType.NO) {
+                System.out.println("Selected NO");
             }
 
 
@@ -195,7 +202,6 @@ public class AdminViewController {
         }
 
     }
-
 
     public void setUser(User user) {
         this.user = user;

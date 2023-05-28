@@ -1,19 +1,19 @@
 //LoginController.java
 //Represents the controller for the login view. It is responsible for checking the login credentials and switching to the main view.
 //Author: Benedikt Schmatz
-//Last changed: 26.05.2023
+//Last changed: 28.05.2023
 
 package com.example.javafxscheduler.controllers;
 
 import com.example.javafxscheduler.entities.User;
 import com.example.javafxscheduler.util.UserUtil;
-import com.example.javafxscheduler.util.UserViewController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -43,11 +43,9 @@ public class LoginController {
         String name = nameField.getText();
         String password = passwordField.getText();
 
-        for (User currentUser : userList) {
-            if (currentUser.getName().equals(name) && currentUser.getPassword().equals(password)) {
-                user = currentUser;
-                user.setUserId(UserUtil.getUserId(user));
-                break;
+        for (User u : userList) {
+            if (u.getName().equals(name) && u.getPassword().equals(password)) {
+                user = u;
             }
         }
 
@@ -67,11 +65,15 @@ public class LoginController {
                     switchToUserAgenda(e);
                     return;
                 default:
-                    System.out.println("No role found");
+                    System.out.println("No valid role found");
                     break;
             }
         } else {
-            System.out.println("Login failed");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Login failed");
+            alert.setContentText("Please check your credentials");
+            alert.showAndWait();
         }
 
     }

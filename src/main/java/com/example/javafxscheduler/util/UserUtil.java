@@ -1,7 +1,7 @@
 //UserUtil.java
 //Represents a utility class for the user entity. It is responsible for the communication with the database.
 //Author: Benedikt Schmatz
-//Last changed: 26.05.2023
+//Last changed: 28.05.2023
 
 package com.example.javafxscheduler.util;
 
@@ -25,7 +25,13 @@ public class UserUtil {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM users");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                users.add(new User(rs.getString("name"), rs.getString("email") ,rs.getString("password"), rs.getString("role")));
+                User user = new User(rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("role"));
+
+                user.setUserId(rs.getInt("user_id"));
+                users.add(user);
             }
 
         } catch (Exception ex) {

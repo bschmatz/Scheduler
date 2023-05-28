@@ -1,11 +1,13 @@
 //WishUtil.java
 //This class is used for database interaction regarding the wishes
 //Author: Benedikt Schmatz
-//Last changed: 26.05.2023
+//Last changed: 28.05.2023
 
 package com.example.javafxscheduler.util;
 
+import com.example.javafxscheduler.entities.Course;
 import com.example.javafxscheduler.entities.Event;
+import com.example.javafxscheduler.entities.Room;
 import com.example.javafxscheduler.entities.Wish;
 import javafx.collections.ObservableList;
 
@@ -36,26 +38,6 @@ public class WishUtil {
 
     }
 
-    public static Wish getWishByEvent(Event e){
-        Wish wish = null;
-
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
-
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM wishes WHERE event_name = '" + e.getEventName() + "' AND date = '" + e.getEventDate() + "' AND start_time = '" + e.getEventStartTime() + "' AND end_time = '" + e.getEventEndTime() + "' AND room = '" + e.getEventRoom() + "'");
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                wish = new Wish(rs.getString("assistant_name"), rs.getDate("date"), rs.getTime("start_time"), rs.getTime("end_time"), rs.getString("event_name"), rs.getString("room"));
-                break;
-            }
-
-        } catch (Exception ex){
-            System.out.println("Connection failed");
-        }
-
-        return wish;
-    }
-
     public static void deleteWish(Wish wish) {
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
@@ -77,6 +59,34 @@ public class WishUtil {
 
     }
 
+    public static Wish getWishByEvent(Event e){
+        Wish wish = null;
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
+
+            String sql = "SELECT * FROM wishes WHERE event_name = '" + e.getEventName() + "' AND date = '" + e.getEventDate() + "' AND start_time = '" + e.getEventStartTime() + "' AND end_time = '" + e.getEventEndTime() + "' AND room = '" + e.getEventRoom() + "'";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                wish = new Wish(rs.getString("assistant_name"),
+                        rs.getDate("date"),
+                        rs.getTime("start_time"),
+                        rs.getTime("end_time"),
+                        new Course(rs.getString("event_name")),
+                        new Room(rs.getString("room")));
+                wish.setWishId(rs.getInt("wish_id"));
+
+                break;
+            }
+
+        } catch (Exception ex){
+            System.out.println("Connection failed");
+        }
+
+        return wish;
+    }
+
     public static ObservableList<String> observableList(Wish[] wishes) {
         ObservableList<String> observableList = javafx.collections.FXCollections.observableArrayList();
         for (Wish wish : wishes) {
@@ -96,7 +106,12 @@ public class WishUtil {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                wishes.add(new Wish(rs.getString("assistant_name"), rs.getDate("date"), rs.getTime("start_time"), rs.getTime("end_time"), rs.getString("event_name"), rs.getString("room")));
+                wishes.add(new Wish(rs.getString("assistant_name"),
+                        rs.getDate("date"),
+                        rs.getTime("start_time"),
+                        rs.getTime("end_time"),
+                        new Course(rs.getString("event_name")),
+                        new Room(rs.getString("room"))));
             }
 
         }catch (Exception e) {
@@ -120,7 +135,12 @@ public class WishUtil {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                wishes.add(new Wish(rs.getString("assistant_name"), rs.getDate("date"), rs.getTime("start_time"), rs.getTime("end_time"), rs.getString("event_name"), rs.getString("room")));
+                wishes.add(new Wish(rs.getString("assistant_name"),
+                        rs.getDate("date"),
+                        rs.getTime("start_time"),
+                        rs.getTime("end_time"),
+                        new Course(rs.getString("event_name")),
+                        new Room(rs.getString("room"))));
             }
 
         }catch (Exception e) {

@@ -5,27 +5,48 @@
 
 package com.example.javafxscheduler.entities;
 
-import com.example.javafxscheduler.util.TimeUtil;
-
 import java.sql.Time;
 import java.sql.Date;
 
-public class Wish {
-    private int wishId;
+public class Notification {
+    private int notificationId;
     private String assistant;
     private Date date;
     private Time startTime;
     private Time endTime;
+    private Time newStartTime;
+    private Time newEndTime;
     private Course course;
     private Room room;
 
-    public Wish(String assistant, Date date, Time startTime, Time endTime, Course course, Room room) {
+    public Notification(Wish wish, Event event){
+        this.assistant = wish.getAssistant();
+        this.date = wish.getDate();
+        this.startTime = wish.getStartTime();
+        this.endTime = wish.getEndTime();
+        this.newStartTime = event.getEventStartTime();
+        this.newEndTime = event.getEventEndTime();
+        this.course = wish.getCourse();
+        this.room = wish.getRoom();
+    }
+
+    public Notification(String assistant, Date date, Time startTime, Time endTime, Time newStartTime, Time newEndTime, Course course, Room room) {
         this.assistant = assistant;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.newStartTime = newStartTime;
+        this.newEndTime = newEndTime;
         this.course = course;
         this.room = room;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
     }
 
     public String getAssistant() {
@@ -60,6 +81,22 @@ public class Wish {
         this.endTime = endTime;
     }
 
+    public Time getNewStartTime() {
+        return newStartTime;
+    }
+
+    public void setNewStartTime(Time newStartTime) {
+        this.newStartTime = newStartTime;
+    }
+
+    public Time getNewEndTime() {
+        return newEndTime;
+    }
+
+    public void setNewEndTime(Time newEndTime) {
+        this.newEndTime = newEndTime;
+    }
+
     public Course getCourse() {
         return course;
     }
@@ -76,35 +113,9 @@ public class Wish {
         this.room = room;
     }
 
-    public int getWishId() {
-        return wishId;
-    }
-
-    public void setWishId(int wishId) {
-        this.wishId = wishId;
-    }
-
     @Override
     public String toString(){
         return course + " | Date: " + date + " | Start: " + startTime + " | End: " + endTime + " | Room: " + room + " | Assistant: " + assistant;
     }
 
-    @Override
-    public boolean equals(Object o){
-        if(this == o){
-            return true;
-        }
-
-        if(o == null || getClass() != o.getClass()){
-            return false;
-        }
-
-        Wish wish = (Wish) o;
-
-        return assistant.equals(wish.assistant)
-                && date.equals(wish.date)
-                && TimeUtil.dateOverlapping(this.date, wish.getDate())
-                && TimeUtil.timeOverlapping(this.startTime, this.endTime, wish.getStartTime(), wish.getEndTime())
-                && room.equals(wish.room);
-    }
 }

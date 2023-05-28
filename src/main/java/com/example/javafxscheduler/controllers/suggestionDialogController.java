@@ -1,3 +1,8 @@
+//suggestionDialogController.java
+//Represents the controller of the suggestion dialog view. It is responsible for updating the view and returning the suggested times.
+//Author: Benedikt Schmatz
+//Last changed: 28.05.2023
+
 package com.example.javafxscheduler.controllers;
 
 import com.example.javafxscheduler.util.TimeUtil;

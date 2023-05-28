@@ -1,11 +1,9 @@
 //Event.java
 //This class represents the event entity in the database
 //Author: Benedikt Schmatz
-//Last changed: 26.05.2023
+//Last changed: 28.05.2023
 
 package com.example.javafxscheduler.entities;
-
-import com.example.javafxscheduler.util.TimeUtil;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -15,7 +13,7 @@ public class Event{
 
     private int eventId;
 
-    private String roomName;
+    private Room room;
 
     private int adminId;
 
@@ -30,8 +28,8 @@ public class Event{
     public Event() {
     }
 
-    public Event (String roomName, int adminId, String eventName, Date eventDate, Time eventStartTime, Time eventEndTime) {
-        this.roomName = roomName;
+    public Event (Room room, int adminId, String eventName, Date eventDate, Time eventStartTime, Time eventEndTime) {
+        this.room = room;
         this.adminId = adminId;
         this.eventName = eventName;
         this.eventDate = eventDate;
@@ -63,12 +61,12 @@ public class Event{
         this.eventName = eventName;
     }
 
-    public String getEventRoom() {
-        return roomName;
+    public Room getEventRoom() {
+        return room;
     }
 
-    public void setEventRoom(String roomName) {
-        this.roomName = roomName;
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public Date getEventDate() {
@@ -96,8 +94,20 @@ public class Event{
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+
+        Event event = (Event) o;
+
+        if (this.getEventRoom() != event.getEventRoom()) return false;
+
+        return true;
+    }
+
+    @Override
     public String toString() {
-        return eventName + " | " + eventDate + " | " + eventStartTime + " - " + eventEndTime + " | " + roomName;
+        return eventName + " | " + eventDate + " | " + eventStartTime + " - " + eventEndTime + " | " + room;
     }
 
 }

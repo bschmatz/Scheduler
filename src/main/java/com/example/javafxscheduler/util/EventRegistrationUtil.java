@@ -1,7 +1,7 @@
 //EventRegistrationUtil.java
 //This class is used for database operations regarding event registrations
 //Author: Benedikt Schmatz
-//Last changed: 26.05.2023
+//Last changed: 28.05.2023
 
 package com.example.javafxscheduler.util;
 

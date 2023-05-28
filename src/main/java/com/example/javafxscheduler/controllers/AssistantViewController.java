@@ -1,23 +1,19 @@
 //AssistantViewController.java
 //Represents the controller for the assistant view.
 //Author: Benedikt Schmatz
-//Last changed: 26.05.2023
+//Last changed: 28.05.2023
 
 package com.example.javafxscheduler.controllers;
 
-import com.example.javafxscheduler.entities.User;
-import com.example.javafxscheduler.entities.Wish;
-import com.example.javafxscheduler.util.CourseUtil;
-import com.example.javafxscheduler.util.RoomUtil;
-import com.example.javafxscheduler.util.TimeUtil;
-import com.example.javafxscheduler.util.WishUtil;
+import com.example.javafxscheduler.entities.*;
+import com.example.javafxscheduler.util.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.sql.Time;
-import java.util.Date;
+import java.sql.Date;
 
 public class AssistantViewController {
     private User user;
@@ -25,9 +21,9 @@ public class AssistantViewController {
     private final int END_HOUR = 23;
 
     @FXML
-    private ChoiceBox<com.example.javafxscheduler.entities.Course> courseField;
+    private ChoiceBox<Course> courseField;
     @FXML
-    private ChoiceBox<com.example.javafxscheduler.entities.Room> roomField;
+    private ChoiceBox<Room> roomField;
     @FXML
     private DatePicker dateField;
     @FXML
@@ -50,6 +46,20 @@ public class AssistantViewController {
         endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
     }
 
+    private void notifCheck(){
+        Notification[] notifs = NotificationUtil.getNotificationsByAssistant(user.getName());
+
+        for (Notification n : notifs){
+            String text = "Old time || "+ n.getCourse() + " || " + n.getDate() + ": " + n.getStartTime() + " - " + n.getEndTime() +
+                    "\nNew time || " + n.getCourse() + " || " + n.getDate() + ": " + n.getNewStartTime() + " - " + n.getNewEndTime();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Notification");
+            alert.setHeaderText("Some of your wishes could not be fulfilled. Times have been adjusted by an admin");
+            alert.setContentText(text);
+            alert.showAndWait();
+        }
+    }
+
     public void submit(ActionEvent e){
         if (!allFieldsFilled()){
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -67,8 +77,8 @@ public class AssistantViewController {
             return;
         }
 
-        String course = courseField.getValue().toString();
-        String room = roomField.getValue().toString();
+        Course course = courseField.getValue();
+        Room room = roomField.getValue();
         Date date = java.sql.Date.valueOf(dateField.getValue());
         Time start = Time.valueOf(startHours.getValue() + ":" + startMinutes.getValue() + ":00");
         Time end = Time.valueOf(endHours.getValue() + ":" + endMinutes.getValue() + ":00");
@@ -136,6 +146,7 @@ public class AssistantViewController {
 
     public void setUser(User user) {
         this.user = user;
+        notifCheck();
     }
 
 

@@ -46,10 +46,6 @@ public class RegisterController {
         roleMenu.setItems(roleList);
     }
 
-    public void setUserList(ArrayList<User> userList) {
-        this.userList = userList;
-    }
-
     public void register() {
         if (nameField.getText().isEmpty() || mailField.getText().isEmpty() || passwordField.getText().isEmpty() || roleMenu.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -72,7 +68,6 @@ public class RegisterController {
         alert.setTitle("Success");
         alert.setHeaderText("Registration successful");
         alert.showAndWait();
-
     }
 
     public void switchToIntroduction(ActionEvent e) throws IOException {

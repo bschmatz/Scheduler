@@ -1,3 +1,8 @@
+//Course.java
+//This class represents a course in the database
+//Author: Benedikt Schmatz
+//Last changed: 28.05.2023
+
 package com.example.javafxscheduler.entities;
 
 public class Course {

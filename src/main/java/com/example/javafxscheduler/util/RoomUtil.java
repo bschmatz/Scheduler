@@ -1,3 +1,8 @@
+//RoomUtil.java
+//This class is used for database operations regarding rooms
+//Author: Benedikt Schmatz
+//Last changed: 28.05.2023
+
 package com.example.javafxscheduler.util;
 
 import com.example.javafxscheduler.entities.Room;
