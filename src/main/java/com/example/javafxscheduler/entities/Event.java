@@ -17,7 +17,7 @@ public class Event{
 
     private int adminId;
 
-    private String eventName;
+    private Course course;
 
     private Date eventDate;
 
@@ -28,10 +28,10 @@ public class Event{
     public Event() {
     }
 
-    public Event (Room room, int adminId, String eventName, Date eventDate, Time eventStartTime, Time eventEndTime) {
+    public Event (Room room, int adminId, Course course, Date eventDate, Time eventStartTime, Time eventEndTime) {
         this.room = room;
         this.adminId = adminId;
-        this.eventName = eventName;
+        this.course = course;
         this.eventDate = eventDate;
         this.eventStartTime = eventStartTime;
         this.eventEndTime = eventEndTime;
@@ -53,12 +53,12 @@ public class Event{
         this.adminId = adminId;
     }
 
-    public String getEventName() {
-        return eventName;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setEventName(Course eventName) {
+        this.course = eventName;
     }
 
     public Room getEventRoom() {
@@ -107,7 +107,7 @@ public class Event{
 
     @Override
     public String toString() {
-        return eventName + " | " + eventDate + " | " + eventStartTime + " - " + eventEndTime + " | " + room;
+        return course + " | " + eventDate + " | " + eventStartTime + " - " + eventEndTime + " | " + room;
     }
 
 }

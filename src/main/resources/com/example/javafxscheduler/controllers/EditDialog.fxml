@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<DialogPane expanded="true" maxWidth="800.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxscheduler.controllers.EditDialogController">
+    <content>
+        <VBox alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Label text="Edit event" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+            <HBox VBox.vgrow="ALWAYS">
+               <children>
+                  <GridPane alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="50.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+                      <RowConstraints minHeight="50.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+                      <RowConstraints minHeight="50.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+                        <RowConstraints minHeight="50.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Course">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label text="Date" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label text="Room" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox fx:id="courseField" prefWidth="150.0" GridPane.columnIndex="1" />
+                        <ChoiceBox fx:id="roomField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <DatePicker fx:id="dateField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <children>
+                              <ChoiceBox fx:id="startHours" prefWidth="150.0">
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" />
+                                 </HBox.margin>
+                              </ChoiceBox>
+                              <Label text=":" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <ChoiceBox fx:id="startMinutes" prefWidth="150.0">
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" />
+                                 </HBox.margin>
+                              </ChoiceBox>
+                              <Label text="-" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <ChoiceBox fx:id="endHours" prefWidth="150.0">
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" />
+                                 </HBox.margin>
+                              </ChoiceBox>
+                              <Label text=":" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <ChoiceBox fx:id="endMinutes" prefWidth="150.0">
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" />
+                                 </HBox.margin>
+                              </ChoiceBox>
+                           </children>
+                        </HBox>
+                        <Label text="Time" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </GridPane>
+               </children>
+            </HBox>
+            </children>
+        </VBox>
+    </content>
+   <buttonTypes>
+      <ButtonType fx:constant="APPLY" />
+      <ButtonType fx:constant="NO" />
+      <ButtonType fx:constant="FINISH" />
+   </buttonTypes>
+</DialogPane>

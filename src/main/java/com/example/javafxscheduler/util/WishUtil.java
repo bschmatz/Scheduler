@@ -90,7 +90,7 @@ public class WishUtil {
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 
-            String sql = "SELECT * FROM wishes WHERE event_name = '" + e.getEventName() + "' AND date = '" + e.getEventDate() + "' AND start_time = '" + e.getEventStartTime() + "' AND end_time = '" + e.getEventEndTime() + "' AND room = '" + e.getEventRoom() + "'";
+            String sql = "SELECT * FROM wishes WHERE event_name = '" + e.getCourse() + "' AND date = '" + e.getEventDate() + "' AND start_time = '" + e.getEventStartTime() + "' AND end_time = '" + e.getEventEndTime() + "' AND room = '" + e.getEventRoom() + "'";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 

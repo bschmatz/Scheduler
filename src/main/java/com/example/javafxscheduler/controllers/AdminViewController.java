@@ -8,6 +8,7 @@ package com.example.javafxscheduler.controllers;
 import com.example.javafxscheduler.entities.*;
 import com.example.javafxscheduler.util.*;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -68,6 +69,10 @@ public class AdminViewController {
     @FXML
     private ListView<Room> roomList;
 
+    //FIELDS FOR THE EDIT-VIEW
+    @FXML
+    private ListView<Event> editList;
+
     private final int START_HOUR = 8;
     private final int END_HOUR = 23;
     private String tab = "Admin";
@@ -75,27 +80,45 @@ public class AdminViewController {
     private User user;
 
     public void initialize() {
-        //INITIALIZE FIELDS FOR THE ADMIN VIEW
-        wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
-        eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
-        courseField.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
-        roomField.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
+        //initialize the lists and choiceboxes
+        refreshElements();
+
         startHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
         startMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
         endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
         endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
 
-        //INITIALIZE FIELDS FOR THE ASSISTANT VIEW
-        wishCourse.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
-        wishRoom.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
+
         wishStartHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR - 1)));
         wishStartMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
         wishEndHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
         wishEndMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
+    }
 
-        //INITIALIZE FIELDS FOR THE ADD-VIEW
-        courseList.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
-        roomList.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
+    //used to refresh the data within a list
+    private void refreshElements() {
+        ObservableList<Event> events = FXCollections.observableArrayList(EventUtil.getAllEvents());
+        ObservableList<Wish> wishes = FXCollections.observableArrayList(WishUtil.getAllWishes());
+        ObservableList<Course> courses = FXCollections.observableArrayList(CourseUtil.getAllCourses());
+        ObservableList<Room> rooms = FXCollections.observableArrayList(RoomUtil.getAllRooms());
+
+        //SET ITEMS FOR THE ADMIN VIEW
+        wishList.setItems(wishes);
+        eventList.setItems(events);
+        courseField.setItems(courses);
+        roomField.setItems(rooms);
+
+        //SET ITEMS FOR THE ASSISTANT VIEW
+        wishCourse.setItems(courses);
+        wishRoom.setItems(rooms);
+
+        //SET ITEMS FOR THE ADD-VIEW
+        courseList.setItems(courses);
+        roomList.setItems(rooms);
+
+        //SET ITEMS FOR THE EDIT-VIEW
+        editList.setItems(events);
+
     }
 
     public void setUser(User user) {
@@ -116,6 +139,11 @@ public class AdminViewController {
         refreshElements();
     }
 
+    public void switchToEditTab() {
+        tab = "Edit";
+        refreshElements();
+    }
+
     private boolean allAdminFieldsFilled() {
         return courseField.getValue() != null
                 && eventDate.getValue() != null
@@ -126,6 +154,7 @@ public class AdminViewController {
                 && endMinutes.getValue() != null;
     }
 
+    ////////////////////////////REGISTER EVENT/////////////////////////////////////
     @FXML
     public void saveEvent() {
 
@@ -137,7 +166,7 @@ public class AdminViewController {
             return;
         }
 
-        String course = courseField.getValue().toString();
+        Course course = courseField.getValue();
         Date date = Date.valueOf(eventDate.getValue());
         Time startTime = Time.valueOf(startHours.getValue() + ":" + startMinutes.getValue() + ":00");
         Time endTime = Time.valueOf(endHours.getValue() + ":" + endMinutes.getValue() + ":00");
@@ -167,7 +196,7 @@ public class AdminViewController {
         if (wish != null) {
             WishUtil.deleteWish(wish);
             int assistantId = UserUtil.getUserId(UserUtil.getUserByName(wish.getAssistant()));
-            EventRegistrationUtil.saveEventRegistration(course, assistantId);
+            EventRegistrationUtil.saveEventRegistration(course.getCourseName(), assistantId);
         }
 
         refreshElements();
@@ -193,25 +222,15 @@ public class AdminViewController {
             WishUtil.deleteWish(wish);
             NotificationUtil.saveNotification(notification);
             int assistantId = UserUtil.getUserId(UserUtil.getUserByName(wish.getAssistant()));
-            EventRegistrationUtil.saveEventRegistration(event.getEventName(), assistantId);
+            EventRegistrationUtil.saveEventRegistration(event.getCourse().getCourseName(), assistantId);
         }
 
         refreshElements();
 
     }
 
-    //used to refresh the data within a list
-    private void refreshElements() {
-        wishList.setItems(FXCollections.observableArrayList(WishUtil.getAllWishes()));
-        eventList.setItems(FXCollections.observableArrayList(EventUtil.getAllEvents()));
-        courseList.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
-        roomList.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
-        roomField.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
-        wishRoom.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
-    }
-
     //when a list item is clicked, the data is transferred to the fields
-    public void transferData() {
+    public void transferRegisterData() {
         Wish wish = wishList.getSelectionModel().getSelectedItem();
 
         if (wish == null) {
@@ -279,7 +298,7 @@ public class AdminViewController {
 
     }
 
-    //METHODS USED FOR THE ASSISTANT VIEW
+    ///////////////////////////////////////////ASSISTANT-VIEW/////////////////////////////////////////////////////////////////////////////
     public void submit(ActionEvent e) {
         Wish wish = createWishFromFields();
 
@@ -337,6 +356,8 @@ public class AdminViewController {
             }
 
             wishEndHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(Integer.parseInt(wishStartHours.getValue()), END_HOUR)));
+
+
         }
     }
 
@@ -365,15 +386,13 @@ public class AdminViewController {
             } else {
                 wishEndMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
             }
+
+
         }
     }
 
     public void addCourseOrEvent(ActionEvent e) {
         addDialog();
-    }
-
-    public void editCourseOrEvent(ActionEvent e) {
-
     }
 
     public void deleteCourseOrEvent(ActionEvent e) {
@@ -432,6 +451,89 @@ public class AdminViewController {
         }
 
     }
+
+    //METHODS USED FOR THE EDIT VIEW
+    public void submitEdit(ActionEvent e) {
+
+
+    }
+
+
+    private void suggestionDialog(Event existing, Event toSave) {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SuggestionDialog.fxml"));
+            DialogPane suggestionDialogPane = loader.load();
+
+            SuggestionDialogController controller = loader.getController();
+
+            //set all the necessary variables
+            controller.setExistingEnd(existing.getEventEndTime());
+            controller.setCurrentStartTime(toSave.getEventStartTime());
+            controller.setCurrentEndTime(toSave.getEventEndTime());
+            controller.updateCurrentTimes();
+            controller.updateSuggestedTimes();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(suggestionDialogPane);
+            dialog.setTitle("Overlapping Events");
+
+            Optional<ButtonType> button = dialog.showAndWait();
+
+            //if the user accepts the suggestion, save the event, otherwise delete the wish
+            if (button.get() == ButtonType.YES) {
+                System.out.println("Selected YES");
+                toSave.setEventStartTime(controller.getSuggestedStartTime());
+                toSave.setEventEndTime(controller.getSuggestedEndTime());
+                EventUtil.updateEvent(toSave);
+            } else if (button.get() == ButtonType.NO) {
+                System.out.println("Selected NO");
+            }
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void transferEditData() {
+        Event event = editList.getSelectionModel().getSelectedItem();
+
+        if (event != null) {
+            editDialog(event);
+        }
+    }
+
+    private void editDialog(Event event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("EditDialog.fxml"));
+            DialogPane editDialogPane = loader.load();
+
+            EditDialogController controller = loader.getController();
+
+            //set all the necessary variables
+            controller.setEvent(event);
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(editDialogPane);
+            dialog.setTitle("Edit Event");
+
+            Optional<ButtonType> button = dialog.showAndWait();
+
+            if (button.get() == ButtonType.APPLY) {
+                controller.update();
+                refreshElements();
+            } else if (button.get() == ButtonType.NO) {
+                controller.delete();
+                refreshElements();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private void notAllFieldsError() {
         Alert alert = new Alert(Alert.AlertType.WARNING);

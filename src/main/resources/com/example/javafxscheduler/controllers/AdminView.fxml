@@ -13,10 +13,10 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import jfxtras.scene.layout.HBox?>
 
 <TabPane minWidth="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxscheduler.controllers.AdminViewController">
    <tabs>
@@ -31,7 +31,7 @@
                               <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label text="Wishes" />
-                                    <ListView fx:id="wishList" onMouseClicked="#transferData" VBox.vgrow="ALWAYS" />
+                                    <ListView fx:id="wishList" onMouseClicked="#transferRegisterData" VBox.vgrow="ALWAYS" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
@@ -133,98 +133,29 @@
             </HBox>
          </content>
       </Tab>
-      <Tab closable="false" onSelectionChanged="#switchToAssistantTab" text="Request Event">
+      <Tab text="Edit events">
          <content>
-            <VBox>
+            <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT">
                <children>
-                  <VBox alignment="CENTER" maxHeight="50.0" VBox.vgrow="ALWAYS">
-                     <children>
-                        <Label text="Make a wish" VBox.vgrow="ALWAYS">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <HBox>
-                     <children>
-                        <HBox maxWidth="30.0" HBox.hgrow="ALWAYS" />
-                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
+                     <content>
+                        <HBox>
                            <children>
-                              <Label text="Course:">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="2.0" top="2.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <ChoiceBox fx:id="wishCourse" />
-                              <Label text="Room">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets bottom="2.0" top="2.0" />
-                                 </padding>
-                              </Label>
-                              <ChoiceBox fx:id="wishRoom" prefWidth="150.0" />
-                              <Label text="Date">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <DatePicker fx:id="wishDate" editable="false" />
-                              <Label text="Starttime - Endtime">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                              <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <ChoiceBox fx:id="wishStartHours">
-                                       <opaqueInsets>
-                                          <Insets />
-                                       </opaqueInsets>
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </ChoiceBox>
-                                    <Label text=":" />
-                                    <ChoiceBox fx:id="wishStartMinutes">
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </ChoiceBox>
-                                    <Label text="-" />
-                                    <ChoiceBox fx:id="wishEndHours" onMouseClicked="#refreshTime">
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </ChoiceBox>
-                                    <Label text=":" />
-                                    <ChoiceBox fx:id="wishEndMinutes" onMouseClicked="#checkMinutes">
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </ChoiceBox>
+                                    <Label text="Events" VBox.vgrow="ALWAYS">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font></Label>
+                                    <ListView fx:id="editList" onMouseClicked="#transferEditData" VBox.vgrow="ALWAYS" />
                                  </children>
-                              </HBox>
+                              </VBox>
                            </children>
-                        </VBox>
-                        <HBox maxWidth="30.0" HBox.hgrow="ALWAYS" />
-                     </children>
-                  </HBox>
-                  <VBox alignment="CENTER" maxHeight="50.0">
-                     <children>
-                        <Button fx:id="submitWish" mnemonicParsing="false" onAction="#submit" text="Submit" VBox.vgrow="ALWAYS">
-                           <font>
-                              <Font size="16.0" />
-                           </font></Button>
-                     </children>
-                  </VBox>
+                        </HBox>
+                     </content>
+                  </ScrollPane>
                </children>
-            </VBox>
+            </HBox>
          </content>
       </Tab>
       <Tab onSelectionChanged="#switchToAddTab" text="Edit courses and rooms">
@@ -245,61 +176,187 @@
                         </VBox>
                         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                            <children>
-                              <GridPane alignment="CENTER" VBox.vgrow="ALWAYS">
-                                <columnConstraints>
-                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
-                                </rowConstraints>
-                                 <children>
-                                    <Label text="Courses">
-                                       <font>
-                                          <Font size="24.0" />
-                                       </font>
-                                    </Label>
-                                    <Label text="Rooms" GridPane.columnIndex="1">
-                                       <font>
-                                          <Font size="24.0" />
-                                       </font>
-                                    </Label>
-                                    <ListView fx:id="courseList" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-                                    <ListView fx:id="roomList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                 </children>
-                              </GridPane>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                 <content>
+                                    <GridPane alignment="CENTER">
+                                      <columnConstraints>
+                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints valignment="CENTER" vgrow="NEVER" />
+                                        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="Courses">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="Rooms" GridPane.columnIndex="1">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <ListView fx:id="courseList" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+                                          <ListView fx:id="roomList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                       </children>
+                                    </GridPane>
+                                 </content>
+                              </ScrollPane>
+                              <VBox minHeight="30.0" />
                            </children>
                         </VBox>
                         <VBox maxHeight="50.0" />
                      </children>
                   </VBox>
-                  <HBox alignment="CENTER" maxWidth="50.0" HBox.hgrow="ALWAYS">
+                  <VBox alignment="CENTER" HBox.hgrow="NEVER">
                      <children>
-                        <ToolBar nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL">
-                          <items>
-                            <Button mnemonicParsing="false" onAction="#addCourseOrEvent" text="Add">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Button>
-                              <Button mnemonicParsing="false" onAction="#editCourseOrEvent" text="Edit">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Button>
-                              <Button mnemonicParsing="false" onAction="#deleteCourseOrEvent" text="Delete">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Button>
-                          </items>
-                        </ToolBar>
+                        <HBox alignment="CENTER" maxWidth="50.0" VBox.vgrow="NEVER">
+                           <children>
+                              <ToolBar nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL">
+                                <items>
+                                  <Button mnemonicParsing="false" onAction="#addCourseOrEvent" text="Add">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" onAction="#deleteCourseOrEvent" text="Delete">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Button>
+                                </items>
+                              </ToolBar>
+                           </children>
+                        </HBox>
                      </children>
-                  </HBox>
+                  </VBox>
                </children>
             </HBox>
+         </content>
+      </Tab>
+      <Tab closable="false" onSelectionChanged="#switchToAssistantTab" text="Request Event">
+         <content>
+            <VBox>
+               <children>
+                  <VBox alignment="CENTER" maxHeight="50.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label text="Make a wish" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <HBox>
+                     <children>
+                        <HBox maxWidth="30.0" HBox.hgrow="ALWAYS" />
+                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                           <children>
+                              <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Course:">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <ChoiceBox fx:id="wishCourse" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Label text="Room">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets bottom="2.0" top="2.0" />
+                                       </padding>
+                                    </Label>
+                                    <ChoiceBox fx:id="wishRoom" prefWidth="150.0">
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </ChoiceBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Label text="Date">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <DatePicker fx:id="wishDate" editable="false" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Starttime - Endtime">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets top="20.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <HBox alignment="CENTER" VBox.vgrow="NEVER">
+                                       <children>
+                                          <ChoiceBox fx:id="wishStartHours">
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                             <HBox.margin>
+                                                <Insets left="5.0" right="5.0" />
+                                             </HBox.margin>
+                                          </ChoiceBox>
+                                          <Label text=":" />
+                                          <ChoiceBox fx:id="wishStartMinutes">
+                                             <HBox.margin>
+                                                <Insets left="5.0" right="5.0" />
+                                             </HBox.margin>
+                                          </ChoiceBox>
+                                          <Label text="-" />
+                                          <ChoiceBox fx:id="wishEndHours" onMouseClicked="#refreshTime">
+                                             <HBox.margin>
+                                                <Insets left="5.0" right="5.0" />
+                                             </HBox.margin>
+                                          </ChoiceBox>
+                                          <Label text=":" />
+                                          <ChoiceBox fx:id="wishEndMinutes" onMouseClicked="#checkMinutes">
+                                             <HBox.margin>
+                                                <Insets left="5.0" right="5.0" />
+                                             </HBox.margin>
+                                          </ChoiceBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        <HBox maxWidth="30.0" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <VBox alignment="CENTER" maxHeight="50.0">
+                     <children>
+                        <Button fx:id="submitWish" mnemonicParsing="false" onAction="#submit" text="Submit" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="40.0" />
+                           </VBox.margin></Button>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
          </content>
       </Tab>
    </tabs>
