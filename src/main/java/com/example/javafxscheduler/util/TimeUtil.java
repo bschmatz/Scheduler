@@ -8,10 +8,19 @@ package com.example.javafxscheduler.util;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class TimeUtil {
+
+    public static boolean validDate(LocalDate date){
+        if(date.isBefore(LocalDate.now())){
+            return false;
+        }
+
+        return true;
+    }
 
     public static String[] getHours(int start, int end) {
         String[] hours = new String[end - start + 1];

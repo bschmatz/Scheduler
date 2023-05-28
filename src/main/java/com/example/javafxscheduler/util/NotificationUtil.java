@@ -6,6 +6,7 @@
 package com.example.javafxscheduler.util;
 
 import com.example.javafxscheduler.entities.*;
+import javafx.scene.control.Alert;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,10 +31,13 @@ public class NotificationUtil {
         }
     }
 
-    public void deleteNotification(Notification notification){
+    public static void deleteNotification(Notification notification){
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
             String sql = "DELETE FROM notifications WHERE notification_id = '" + notification.getNotificationId() + "'";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+            System.out.println("Notification deleted");
 
         } catch (Exception e){
             System.out.println("Connection failed");
@@ -63,6 +67,24 @@ public class NotificationUtil {
         }
 
         return notifications.toArray(new Notification[0]);
+    }
+
+    public static void notifCheck(User user){
+        Notification[] notifs = NotificationUtil.getNotificationsByAssistant(user.getName());
+
+        for (Notification n : notifs){
+
+            //Delete the notification from the database
+            NotificationUtil.deleteNotification(n);
+
+            String text = "Old time || "+ n.getCourse() + " || " + n.getDate() + ": " + n.getStartTime() + " - " + n.getEndTime() +
+                    "\nNew time || " + n.getCourse() + " || " + n.getDate() + ": " + n.getNewStartTime() + " - " + n.getNewEndTime();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Notification");
+            alert.setHeaderText("Some of your wishes could not be fulfilled. Times have been adjusted by an admin");
+            alert.setContentText(text);
+            alert.showAndWait();
+        }
     }
 }
 

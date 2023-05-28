@@ -11,7 +11,9 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 
+import java.io.IOException;
 import java.sql.Time;
 import java.sql.Date;
 
@@ -37,6 +39,7 @@ public class AssistantViewController {
     @FXML
     private ListView<String> wishList;
 
+    //Initializes the assistant view
     public void initialize(){
         courseField.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
         roomField.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
@@ -46,35 +49,26 @@ public class AssistantViewController {
         endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
     }
 
-    private void notifCheck(){
-        Notification[] notifs = NotificationUtil.getNotificationsByAssistant(user.getName());
-
-        for (Notification n : notifs){
-            String text = "Old time || "+ n.getCourse() + " || " + n.getDate() + ": " + n.getStartTime() + " - " + n.getEndTime() +
-                    "\nNew time || " + n.getCourse() + " || " + n.getDate() + ": " + n.getNewStartTime() + " - " + n.getNewEndTime();
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Notification");
-            alert.setHeaderText("Some of your wishes could not be fulfilled. Times have been adjusted by an admin");
-            alert.setContentText(text);
-            alert.showAndWait();
-        }
+    public void setUser(User user) {
+        this.user = user;
+        NotificationUtil.notifCheck(user);
     }
 
-    public void submit(ActionEvent e){
+    private Wish createWishFromFields(){
         if (!allFieldsFilled()){
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("Not all fields filled out");
             alert.setContentText("Please fill out all fields before submitting");
             alert.showAndWait();
-            return;
-        } else if (!validDate()){
+            return null;
+        } else if (TimeUtil.validDate(dateField.getValue())){
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("Invalid date");
-            alert.setContentText("Please enter a valid date");
+            alert.setContentText("Please enter a date after today");
             alert.showAndWait();
-            return;
+            return null;
         }
 
         Course course = courseField.getValue();
@@ -83,9 +77,17 @@ public class AssistantViewController {
         Time start = Time.valueOf(startHours.getValue() + ":" + startMinutes.getValue() + ":00");
         Time end = Time.valueOf(endHours.getValue() + ":" + endMinutes.getValue() + ":00");
 
-        Wish wish = new Wish(user.getName(), date, start, end, course, room);
-        WishUtil.saveWish(wish);
+        return new Wish(user.getName(), date, start, end, course, room);
+    }
 
+    public void submit(ActionEvent e) {
+        Wish wish;
+
+        do {
+            wish = createWishFromFields();
+        } while (wish == null);
+
+        WishUtil.saveWish(wish);
     }
 
     public boolean allFieldsFilled(){
@@ -98,41 +100,26 @@ public class AssistantViewController {
                 && roomField.getValue() != null;
     }
 
-    public boolean validDate(){
-        if (dateField.getValue().isBefore(java.time.LocalDate.now())){
-            return false;
-        }
-
-        return true;
-    }
-
     //checks the times and adjusts the options accordingly
-    public void checkTimes(){
-        if (startHours.getValue() != null){
-            endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(Integer.parseInt(startHours.getValue()), END_HOUR)));
+    public void refreshTime(MouseEvent e){
+        if (startHours.getValue() == null){
+            return;
         }
 
-        checkMinutes();
+        endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(Integer.parseInt(startHours.getValue()), END_HOUR)));
     }
 
-    public void checkMinutes(){
+    public void checkMinutes(MouseEvent e){
 
-        if (endHours.getValue() != null && Integer.parseInt(endHours.getValue()) == END_HOUR){
-            endMinutes.setItems(FXCollections.observableArrayList("00"));
+        if (startMinutes.getValue() == null){
+            return;
         }
 
-        if (startMinutes.getValue() != null){
-
-            if (startHours.getValue().equals(endHours.getValue())){
-                endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(Integer.parseInt(startMinutes.getValue()))));
-            } else {
-                endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
-            }
-
-
+        if (startHours.getValue().equals(endHours.getValue())){
+            endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(Integer.parseInt(startMinutes.getValue()))));
+        } else {
+            endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
         }
-
-
     }
 
     //refreshes the list of wishes when the tab is changed in JavaFX
@@ -142,11 +129,6 @@ public class AssistantViewController {
 
     public void printWish(){
         System.out.println(wishList.getSelectionModel().getSelectedItem());
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-        notifCheck();
     }
 
 

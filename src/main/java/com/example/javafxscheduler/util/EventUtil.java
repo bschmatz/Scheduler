@@ -166,7 +166,7 @@ public class EventUtil {
         return events.toArray(new Event[0]);
     }
 
-    public static boolean sameEvent(Event eventOne, Event eventTwo){
+    public static boolean eventsOverlap(Event eventOne, Event eventTwo){
         Date oneDate = eventOne.getEventDate();
         Date twoDate = eventTwo.getEventDate();
         Time oneStart = eventOne.getEventStartTime();
