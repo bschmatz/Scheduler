@@ -108,7 +108,7 @@
                               <Insets bottom="4.0" top="4.0" />
                            </VBox.margin>
                            <children>
-                              <Button mnemonicParsing="false" onAction="#switchToLogin" text="Back to Login">
+                              <Button mnemonicParsing="false" onAction="#switchToLogin" text="Log Out">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

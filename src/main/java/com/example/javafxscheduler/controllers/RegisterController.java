@@ -49,6 +49,13 @@ public class RegisterController {
             alert.setContentText("Please fill out all fields before submitting");
             alert.showAndWait();
             return;
+        } else if (!UserUtil.isValidFormat(mailField.getText())){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Invalid email format");
+            alert.setContentText("Please enter a valid email address");
+            alert.showAndWait();
+            return;
         }
 
         String name = nameField.getText();

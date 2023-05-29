@@ -7,11 +7,19 @@ package com.example.javafxscheduler.controllers;
 
 import com.example.javafxscheduler.entities.Course;
 import com.example.javafxscheduler.util.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.User;
 import javafx.collections.FXCollections;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class UserViewController {
 
@@ -83,4 +91,12 @@ public class UserViewController {
         refreshEvents();
     }
 
+    public void switchToIntroduction(ActionEvent e) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("Introduction.fxml"));
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Welcome!");
+        stage.show();
+    }
 }

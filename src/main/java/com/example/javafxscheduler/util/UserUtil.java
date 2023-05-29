@@ -13,6 +13,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserUtil {
 
@@ -113,6 +115,12 @@ public class UserUtil {
             System.out.println("Connection failed");
             ex.printStackTrace();
         }
+    }
+
+    public static boolean isValidFormat(String email){
+        Pattern emailPattern = Pattern.compile("[A-Za-z0-9]+[.[A-Za-z0-9]+]*@[A-Za-z0-9]+(.[A-Za-z0-9]+)+");
+        Matcher matcher = emailPattern.matcher(email);
+        return matcher.matches();
     }
 
 }

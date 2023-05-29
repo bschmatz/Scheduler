@@ -129,7 +129,7 @@
                      </VBox.margin></VBox>
                   <ToolBar prefHeight="40.0" prefWidth="200.0">
                     <items>
-                      <Button mnemonicParsing="false" onAction="#switchToLogin" text="Back to Login" />
+                      <Button mnemonicParsing="false" onAction="#switchToLogin" text="Log Out" />
                     </items>
                   </ToolBar>
                </children>
