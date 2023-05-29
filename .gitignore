@@ -42,3 +42,6 @@ target/
 mvnw
 mvnw.cmd
 .mvn/
+
+### Misc ###
+*.zip
