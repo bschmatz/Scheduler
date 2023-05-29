@@ -212,7 +212,7 @@
                   </VBox>
                   <VBox alignment="CENTER" HBox.hgrow="NEVER">
                      <children>
-                        <HBox alignment="CENTER" maxWidth="50.0" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER" maxWidth="50.0" VBox.vgrow="ALWAYS">
                            <children>
                               <ToolBar nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL">
                                 <items>
@@ -229,6 +229,9 @@
                                 </items>
                               </ToolBar>
                            </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </HBox>
                      </children>
                   </VBox>

@@ -262,6 +262,7 @@ public class AdminViewController {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Login");
+        stage.centerOnScreen();
         stage.show();
     }
 

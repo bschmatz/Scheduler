@@ -97,6 +97,7 @@ public class UserViewController {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Welcome!");
+        stage.centerOnScreen();
         stage.show();
     }
 }
