@@ -1,7 +1,7 @@
 //UserUtil.java
 //Represents a utility class for the user entity. It is responsible for the communication with the database.
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.util;
 
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class UserUtil {
 
+    // Retrieves all users from the database and returns them as an ArrayList.
     public static ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<>();
 
@@ -42,6 +43,7 @@ public class UserUtil {
         return users;
     }
 
+    // Retrieves the user ID of the specified user from the database based on the name and email. Returns the user ID as an integer.
     public static int getUserId(User user){
         int userId = 0;
 
@@ -62,6 +64,7 @@ public class UserUtil {
         return userId;
     }
 
+    // Retrieves a user from the database based on the given name. Returns the user object if found, otherwise returns null.
     public static User getUserByName(String name){
         User user = null;
 
@@ -82,6 +85,7 @@ public class UserUtil {
         return user;
     }
 
+    // Inserts a new user into the database with the provided user object's attributes (name, email, password, role).
     public static void save(User user) {
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
             System.out.println("Connection established");

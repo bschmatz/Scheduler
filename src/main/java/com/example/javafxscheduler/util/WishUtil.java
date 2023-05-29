@@ -1,7 +1,7 @@
 //WishUtil.java
 //This class is used for database interaction regarding the wishes
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.util;
 
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class WishUtil {
 
+    // Inserts a new wish into the database with the provided wish object's attributes (assistant, date, start time, end time, course, room)
     public static void saveWish(Wish wish) {
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
@@ -38,6 +39,7 @@ public class WishUtil {
 
     }
 
+    // Deletes a wish from the database based on the provided wish object's attributes (assistant, date, start time, end time, course, room).
     public static void deleteWish(Wish wish) {
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
@@ -59,6 +61,7 @@ public class WishUtil {
 
     }
 
+    // Deletes all wishes from the database associated with the specified room.
     public static void deleteWishesByRoom(Room room){
         try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
@@ -72,6 +75,7 @@ public class WishUtil {
         }
     }
 
+    // Deletes all wishes from the database associated with the specified course
     public static void deleteWishByCourse(Course course){
         try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
@@ -85,6 +89,7 @@ public class WishUtil {
         }
     }
 
+    // Retrieves a wish from the database based on the provided event object's attributes (course, date, start time, end time, room).
     public static Wish getWishByEvent(Event e){
         Wish wish = null;
 
@@ -113,6 +118,7 @@ public class WishUtil {
         return wish;
     }
 
+    // Converts an array of wishes into an observable list of strings.
     public static ObservableList<String> observableList(Wish[] wishes) {
         ObservableList<String> observableList = javafx.collections.FXCollections.observableArrayList();
         for (Wish wish : wishes) {
@@ -121,6 +127,7 @@ public class WishUtil {
         return observableList;
     }
 
+    // Retrieves all wishes from the database and returns them as an array of wish objects.
     public static Wish[] getAllWishes() {
         ArrayList<Wish> wishes = new ArrayList<>();
 
@@ -148,6 +155,7 @@ public class WishUtil {
         return wishes.toArray(new Wish[0]);
     }
 
+    // Retrieves all wishes associated with the specified username from the database and returns them as an array of wish objects.
     public static Wish[] getWishesByName(String username) {
         ArrayList<Wish> wishes = new ArrayList<>();
 

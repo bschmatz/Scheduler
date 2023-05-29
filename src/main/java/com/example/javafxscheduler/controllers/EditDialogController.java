@@ -56,6 +56,7 @@ public class EditDialogController {
         endMinutes.setValue(event.getEventEndTime().toString().substring(3, 5));
     }
 
+    //Updates the event
     public void update() {
         event.setEventName(courseField.getValue());
         event.setEventDate(Date.valueOf(dateField.getValue()));
@@ -66,6 +67,7 @@ public class EditDialogController {
         EventUtil.updateEvent(event);
     }
 
+    //Deletes the event
     public void delete() {
         EventUtil.deleteEventById(eventId);
     }

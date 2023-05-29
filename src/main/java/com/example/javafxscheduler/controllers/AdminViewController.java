@@ -1,7 +1,7 @@
 //AdminViewController.java
 //This class handles the admin view, where admins can create new events
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.controllers;
 
@@ -155,7 +155,8 @@ public class AdminViewController {
     }
 
     ////////////////////////////REGISTER EVENT/////////////////////////////////////
-    @FXML
+
+    //saves the events and suggests a new time if the event overlaps with another event
     public void saveEvent() {
 
         if (!allAdminFieldsFilled()) {
@@ -188,8 +189,10 @@ public class AdminViewController {
 
         }
 
+        event.setAdminId(user.getUserId());
+
         //finally, save the event if it does not need to be modified
-        EventUtil.saveEvent(event, user);
+        EventUtil.saveEvent(event);
 
 
         //if the event was created from a wish, delete the wish and register the assistant for the event
@@ -214,8 +217,11 @@ public class AdminViewController {
             }
         }
 
-        EventUtil.saveEvent(event, user);
+        //save the event if it does not need to be modified
+        event.setAdminId(user.getUserId());
+        EventUtil.saveEvent(event);
 
+        //if the event was created from a wish, delete the wish and register the assistant for the event
         if (wish != null) {
             Notification notification = new Notification(wish, event);
 
@@ -248,6 +254,7 @@ public class AdminViewController {
 
     }
 
+    //switch back to the login screen
     public void switchToLogin(ActionEvent e) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
         Parent root = loader.load();
@@ -299,6 +306,8 @@ public class AdminViewController {
     }
 
     ///////////////////////////////////////////ASSISTANT-VIEW/////////////////////////////////////////////////////////////////////////////
+
+    //submits a new wish
     public void submit(ActionEvent e) {
         Wish wish = createWishFromFields();
 
@@ -310,6 +319,7 @@ public class AdminViewController {
         refreshElements();
     }
 
+    //checks if all fields are filled and creates a wish from the fields
     private Wish createWishFromFields() {
         if (!allAssistantFieldsFilled()) {
             notAllFieldsError();
@@ -328,6 +338,7 @@ public class AdminViewController {
         return new Wish(user.getName(), date, start, end, course, room);
     }
 
+    //checks if all fields are filled
     private boolean allAssistantFieldsFilled() {
         return wishCourse.getValue() != null
                 && wishDate.getValue() != null
@@ -361,6 +372,7 @@ public class AdminViewController {
         }
     }
 
+    //adjusts times accordingly
     public void checkMinutes(MouseEvent e) {
 
         if (tab.equals("Admin")) {
@@ -399,6 +411,7 @@ public class AdminViewController {
         deleteDialog();
     }
 
+    //opens a dialog to add a new course or room
     private void addDialog() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AddDialog.fxml"));
@@ -422,6 +435,7 @@ public class AdminViewController {
         }
     }
 
+    //deletes the selected course or room
     private void deleteDialog() {
         Course course;
         Room room;
@@ -453,51 +467,8 @@ public class AdminViewController {
     }
 
     //METHODS USED FOR THE EDIT VIEW
-    public void submitEdit(ActionEvent e) {
 
-
-    }
-
-
-    private void suggestionDialog(Event existing, Event toSave) {
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SuggestionDialog.fxml"));
-            DialogPane suggestionDialogPane = loader.load();
-
-            SuggestionDialogController controller = loader.getController();
-
-            //set all the necessary variables
-            controller.setExistingEnd(existing.getEventEndTime());
-            controller.setCurrentStartTime(toSave.getEventStartTime());
-            controller.setCurrentEndTime(toSave.getEventEndTime());
-            controller.updateCurrentTimes();
-            controller.updateSuggestedTimes();
-
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(suggestionDialogPane);
-            dialog.setTitle("Overlapping Events");
-
-            Optional<ButtonType> button = dialog.showAndWait();
-
-            //if the user accepts the suggestion, save the event, otherwise delete the wish
-            if (button.get() == ButtonType.YES) {
-                System.out.println("Selected YES");
-                toSave.setEventStartTime(controller.getSuggestedStartTime());
-                toSave.setEventEndTime(controller.getSuggestedEndTime());
-                EventUtil.updateEvent(toSave);
-            } else if (button.get() == ButtonType.NO) {
-                System.out.println("Selected NO");
-            }
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    public void transferEditData() {
+    public void startEdit() {
         Event event = editList.getSelectionModel().getSelectedItem();
 
         if (event != null) {
@@ -505,6 +476,7 @@ public class AdminViewController {
         }
     }
 
+    //dialog for editing an event, also used for deleting an event
     private void editDialog(Event event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("EditDialog.fxml"));
@@ -534,7 +506,7 @@ public class AdminViewController {
         }
     }
 
-
+    //dialog if not all fields are filled out
     private void notAllFieldsError() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -543,6 +515,7 @@ public class AdminViewController {
         alert.showAndWait();
     }
 
+    //dialog if the date is invalid
     private void invalidDateError() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");

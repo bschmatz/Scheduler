@@ -133,7 +133,7 @@
             </HBox>
          </content>
       </Tab>
-      <Tab text="Edit events">
+      <Tab onSelectionChanged="#switchToEditTab" text="Edit events">
          <content>
             <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT">
                <children>
@@ -147,7 +147,7 @@
                                        <font>
                                           <Font size="24.0" />
                                        </font></Label>
-                                    <ListView fx:id="editList" onMouseClicked="#transferEditData" VBox.vgrow="ALWAYS" />
+                                    <ListView fx:id="editList" onMouseClicked="#startEdit" VBox.vgrow="ALWAYS" />
                                  </children>
                               </VBox>
                            </children>

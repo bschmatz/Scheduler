@@ -36,3 +36,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Maven ###
+target/
+mvnw
+mvnw.cmd
+.mvn/

@@ -1,7 +1,7 @@
 //Application.java
 //Represents the entry point of the application.
 //Author: Benedikt Schmatz
-//Last changed: 19.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler;
 
@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class Application extends javafx.application.Application {
+
     @Override
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("controllers/Introduction.fxml"));

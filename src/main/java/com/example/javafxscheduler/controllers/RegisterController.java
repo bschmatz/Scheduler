@@ -23,7 +23,6 @@ import javafx.stage.Stage;
 import com.example.javafxscheduler.util.UserUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class RegisterController {
     @FXML
@@ -33,19 +32,15 @@ public class RegisterController {
     @FXML
     private PasswordField passwordField;
     @FXML
-    private ChoiceBox roleMenu;
+    private ChoiceBox<String> roleMenu;
     ObservableList<String> roleList = FXCollections.observableArrayList("Assistant", "Student");
 
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
-
-    private ArrayList<User> userList;
 
     public void initialize() {
         roleMenu.setItems(roleList);
     }
 
+    //Checks the register credentials and registers the user.
     public void register() {
         if (nameField.getText().isEmpty() || mailField.getText().isEmpty() || passwordField.getText().isEmpty() || roleMenu.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -59,7 +54,7 @@ public class RegisterController {
         String name = nameField.getText();
         String mail = mailField.getText();
         String password = passwordField.getText();
-        String role = roleMenu.getValue().toString();
+        String role = roleMenu.getValue();
         System.out.println(name + " " + mail + " " + password + " " + role);
 
         User user = new User(name, mail, password, role);
@@ -71,6 +66,10 @@ public class RegisterController {
     }
 
     public void switchToIntroduction(ActionEvent e) throws IOException {
+        Stage stage;
+        Scene scene;
+        Parent root;
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Introduction.fxml"));
         root = loader.load();
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();

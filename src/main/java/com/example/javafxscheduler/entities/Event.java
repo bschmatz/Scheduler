@@ -100,9 +100,7 @@ public class Event{
 
         Event event = (Event) o;
 
-        if (this.getEventRoom() != event.getEventRoom()) return false;
-
-        return true;
+        return this.getEventRoom() == event.getEventRoom();
     }
 
     @Override

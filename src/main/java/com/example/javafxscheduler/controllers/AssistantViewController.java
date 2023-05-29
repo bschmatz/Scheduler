@@ -1,7 +1,7 @@
 //AssistantViewController.java
 //Represents the controller for the assistant view.
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.controllers;
 
@@ -44,26 +44,35 @@ public class AssistantViewController {
     @FXML
     private ListView<String> wishList;
 
+    @FXML
+    private ListView<Event> eventList;
+    @FXML
+    private ChoiceBox<Course> eventCourse;
+
     //Initializes the assistant view
-    public void initialize(){
+    public void initialize() {
         courseField.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
         roomField.setItems(FXCollections.observableArrayList(RoomUtil.getAllRooms()));
         startHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR - 1)));
         startMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
         endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(START_HOUR, END_HOUR)));
         endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
+
+        eventCourse.setItems(FXCollections.observableArrayList(CourseUtil.getAllCourses()));
     }
 
     public void setUser(User user) {
         this.user = user;
-        NotificationUtil.notifCheck(user);
+        NotificationUtil.notificationCheck(user);
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getEventsByUser(user)));
     }
 
-    private Wish createWishFromFields(){
-        if (!allFieldsFilled()){
+    //creates a new wish from the input fields
+    private Wish createWishFromFields() {
+        if (!allFieldsFilled()) {
             notAllFieldsError();
             return null;
-        } else if (!TimeUtil.validDate(dateField.getValue())){
+        } else if (!TimeUtil.validDate(dateField.getValue())) {
             invalidDateError();
             return null;
         }
@@ -77,17 +86,19 @@ public class AssistantViewController {
         return new Wish(user.getName(), date, start, end, course, room);
     }
 
+    //saves a wish if all fields are filled
     public void submit(ActionEvent e) {
         Wish wish;
 
-        do {
-            wish = createWishFromFields();
-        } while (wish == null);
+        if ((wish = createWishFromFields()) == null) {
+            return;
+        }
 
         WishUtil.saveWish(wish);
     }
 
-    public boolean allFieldsFilled(){
+    //checks if all fields are filled
+    public boolean allFieldsFilled() {
         return startHours.getValue() != null
                 && startMinutes.getValue() != null
                 && endHours.getValue() != null
@@ -98,21 +109,22 @@ public class AssistantViewController {
     }
 
     //checks the times and adjusts the options accordingly
-    public void refreshTime(MouseEvent e){
-        if (startHours.getValue() == null){
+    public void refreshTime(MouseEvent e) {
+        if (startHours.getValue() == null) {
             return;
         }
 
         endHours.setItems(FXCollections.observableArrayList(TimeUtil.getHours(Integer.parseInt(startHours.getValue()), END_HOUR)));
     }
 
-    public void checkMinutes(MouseEvent e){
+    //checks the minutes and adjusts the options accordingly
+    public void checkMinutes(MouseEvent e) {
 
-        if (startMinutes.getValue() == null){
+        if (startMinutes.getValue() == null) {
             return;
         }
 
-        if (startHours.getValue().equals(endHours.getValue())){
+        if (startHours.getValue().equals(endHours.getValue())) {
             endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(Integer.parseInt(startMinutes.getValue()))));
         } else {
             endMinutes.setItems(FXCollections.observableArrayList(TimeUtil.getMinutes(0)));
@@ -120,10 +132,59 @@ public class AssistantViewController {
     }
 
     //refreshes the list of wishes when the tab is changed in JavaFX
-    public void refreshWishList(){
+    public void refreshWishList() {
         wishList.setItems(FXCollections.observableArrayList(WishUtil.observableList(WishUtil.getWishesByName(user.getName()))));
     }
 
+    //enlist the user for an event
+    public void enlist() {
+
+        if (eventCourse.getValue() == null) {
+            return;
+        }
+
+        //checks if the user has already been registered for the event
+        if (EventRegistrationUtil.userRegistered(eventCourse.getValue().toString(), UserUtil.getUserId(user))) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Already registered!");
+            alert.setHeaderText("You are already registered for this event!");
+            alert.setContentText("Please choose another event or contact an administrator!");
+            alert.showAndWait();
+            return;
+        }
+
+        Event[] userEvents = EventUtil.getEventsByUser(user);
+        Event[] eventsByCourse = EventUtil.getEventsByCourse(eventCourse.getValue().toString());
+
+        for (Event event : userEvents){
+            for (Event courseEvent : eventsByCourse){
+                if (EventUtil.eventsOverlap(event, courseEvent)){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Overlapping events!");
+                    alert.setHeaderText("One or more events are overlapping!");
+                    alert.setContentText("Please choose another event or contact an administrator!");
+                    alert.showAndWait();
+                    return;
+                }
+            }
+        }
+
+        EventRegistrationUtil.saveEventRegistration(eventCourse.getValue().toString(), UserUtil.getUserId(user));
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getEventsByUser(user)));
+    }
+
+    //signs the user out of an event
+    public void signOut() {
+
+        if (!EventRegistrationUtil.userRegistered(eventCourse.getValue().toString(), UserUtil.getUserId(user))) {
+            return;
+        }
+
+        EventRegistrationUtil.deleteEventRegistration(eventCourse.getValue().toString(), UserUtil.getUserId(user));
+        eventList.setItems(FXCollections.observableArrayList(EventUtil.getEventsByUser(user)));
+    }
+
+    //switches to the login view
     public void switchToLogin(ActionEvent e) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
         Parent root = loader.load();
@@ -135,7 +196,7 @@ public class AssistantViewController {
         stage.show();
     }
 
-
+    //error if not all fields are filled
     private void notAllFieldsError() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -144,6 +205,7 @@ public class AssistantViewController {
         alert.showAndWait();
     }
 
+    //error if the date is invalid
     private void invalidDateError() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");

@@ -38,6 +38,7 @@ public class LoginController {
         userList = UserUtil.getAllUsers();
     }
 
+    //Checks the login credentials and switches to the main view.
     public void loginCheck(ActionEvent e) throws IOException {
 
         String name = nameField.getText();
@@ -62,7 +63,7 @@ public class LoginController {
                     return;
                 case "Student":
                     System.out.println("Student logged in");
-                    switchToUserAgenda(e);
+                    switchToUserView(e);
                     return;
                 default:
                     System.out.println("No valid role found");
@@ -87,7 +88,7 @@ public class LoginController {
         stage.show();
     }
 
-    public void switchToUserAgenda(ActionEvent e) throws IOException {
+    public void switchToUserView(ActionEvent e) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("UserView.fxml"));
         root = loader.load();
 

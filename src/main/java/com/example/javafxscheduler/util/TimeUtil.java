@@ -1,7 +1,7 @@
 //TimeUtil.java
 //This class provides utility methods for time related operations
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.util;
 
@@ -14,14 +14,22 @@ import java.util.ArrayList;
 
 public class TimeUtil {
 
+    //checks if a date is valid, i.e. not in the past
     public static boolean validDate(LocalDate date){
-        if(date.isBefore(LocalDate.now())){
-            return false;
-        }
-
-        return true;
+        return !date.isBefore(LocalDate.now());
     }
 
+    //checks if a date is overlapping with another date
+    public static boolean dateOverlapping(Date date1, Date date2){
+        return date1.equals(date2);
+    }
+
+    //checks if a time is overlapping with another time
+    public static boolean timeOverlapping(Time start1, Time end1, Time start2, Time end2){
+        return start1.before(end2) && end1.after(start2);
+    }
+
+    //gets all hours for a specific start and end time
     public static String[] getHours(int start, int end) {
         String[] hours = new String[end - start + 1];
         for (int i = 0; i < hours.length; i++) {
@@ -30,14 +38,7 @@ public class TimeUtil {
         return hours;
     }
 
-    public static boolean dateOverlapping(Date date1, Date date2){
-        return date1.equals(date2);
-    }
-
-    public static boolean timeOverlapping(Time start1, Time end1, Time start2, Time end2){
-        return start1.before(end2) && end1.after(start2);
-    }
-
+    //gets all minutes for a specific start time
     public static String[] getMinutes(int start) {
         ArrayList<String> minutes;
 
@@ -69,6 +70,7 @@ public class TimeUtil {
         return minutes.toArray(new String[0]);
     }
 
+    //returns new suggested times for a specific start and end time, based on an existing end time
     public static Time[] getSuggestedTimes(Time existingEnd, Time start, Time end){
 
         LocalTime startLocal = start.toLocalTime();

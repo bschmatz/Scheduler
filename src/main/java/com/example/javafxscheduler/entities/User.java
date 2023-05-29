@@ -85,9 +85,7 @@ public class User {
         if (!Objects.equals(name, user.name)) return false;
         if (!Objects.equals(email, user.email)) return false;
         if (!Objects.equals(password, user.password)) return false;
-        if (!Objects.equals(role, user.role)) return false;
-
-        return true;
+        return Objects.equals(role, user.role);
     }
 
     @Override

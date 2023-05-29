@@ -1,7 +1,7 @@
 //NotificationUtil.java
 //This class is used for database operations regarding notifications
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.util;
 
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class NotificationUtil {
 
+    //Saves a notification to the database
     public static void saveNotification(Notification notification) {
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
@@ -31,6 +32,7 @@ public class NotificationUtil {
         }
     }
 
+    //Deletes a notification from the database
     public static void deleteNotification(Notification notification){
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
@@ -45,6 +47,7 @@ public class NotificationUtil {
         }
     }
 
+    //returns all notifications of a specific assistant
     public static Notification[] getNotificationsByAssistant(String name){
         ArrayList<Notification> notifications = new ArrayList<>();
 
@@ -69,10 +72,11 @@ public class NotificationUtil {
         return notifications.toArray(new Notification[0]);
     }
 
-    public static void notifCheck(User user){
-        Notification[] notifs = NotificationUtil.getNotificationsByAssistant(user.getName());
+    //sends the assistant a dialog with all notifications. Deletes the notifications afterwards
+    public static void notificationCheck(User user){
+        Notification[] notifications = NotificationUtil.getNotificationsByAssistant(user.getName());
 
-        for (Notification n : notifs){
+        for (Notification n : notifications){
 
             //Delete the notification from the database
             NotificationUtil.deleteNotification(n);

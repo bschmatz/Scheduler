@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 
 public class EventRegistrationUtil {
 
+    //checks if a user is already registered for an event
     public static boolean userRegistered(String event_name, int userId){
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
@@ -30,6 +31,7 @@ public class EventRegistrationUtil {
         return false;
     }
 
+    //saves an event registration to the database
     public static void saveEventRegistration(String event_name, int student_id) {
 
         if (userRegistered(event_name, student_id)) {
@@ -51,6 +53,7 @@ public class EventRegistrationUtil {
         }
     }
 
+    //deletes an event registration from the database
     public static void deleteEventRegistration(String eventName, int userId) {
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
@@ -66,7 +69,8 @@ public class EventRegistrationUtil {
         }
     }
 
-    public static void deleteAllEventRegistations(String courseName){
+    //deletes all event registrations for a course
+    public static void deleteCourseRegistrations(String courseName){
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
             String sql = "DELETE FROM event_registrations WHERE event_name = '" + courseName + "'";

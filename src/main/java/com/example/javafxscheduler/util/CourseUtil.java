@@ -1,13 +1,11 @@
 //CourseUtil.java
-//Adds some utility functions for the course entity
+//Adds some utility functions for the course entity, including database interaction
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.util;
 
 import com.example.javafxscheduler.entities.Course;
-import com.example.javafxscheduler.entities.EventRegistration;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,6 +14,7 @@ import java.util.ArrayList;
 
 public class CourseUtil {
 
+    //saves a course to the database
     public static void saveCourse(Course course) {
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
 
@@ -31,8 +30,9 @@ public class CourseUtil {
         }
     }
 
+    //deletes a course based on the id
     public static void deleteCourse(Course course) {
-        EventRegistrationUtil.deleteAllEventRegistations(course.getCourseName());
+        EventRegistrationUtil.deleteCourseRegistrations(course.getCourseName());
         EventUtil.deleteEventsByCourse(course);
         WishUtil.deleteWishByCourse(course);
 
@@ -50,6 +50,7 @@ public class CourseUtil {
         }
     }
 
+    //returns all courses from the database
     public static Course[] getAllCourses(){
         ArrayList<Course> courses = new ArrayList<>();
 
@@ -74,6 +75,7 @@ public class CourseUtil {
         return courses.toArray(new Course[0]);
     }
 
+    //returns the course id based on the course name
     public static int getCourseIdByName(String courseName) {
         int courseId = 0;
 

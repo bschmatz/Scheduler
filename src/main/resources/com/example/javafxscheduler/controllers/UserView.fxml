@@ -23,11 +23,17 @@
       <ListView fx:id="eventList" VBox.vgrow="ALWAYS" />
       <HBox alignment="CENTER" maxHeight="50.0" VBox.vgrow="ALWAYS">
          <children>
-            <ChoiceBox fx:id="courseBox" prefWidth="150.0" />
+            <ChoiceBox fx:id="courseBox" prefWidth="150.0">
+               <HBox.margin>
+                  <Insets right="4.0" />
+               </HBox.margin></ChoiceBox>
             <Button fx:id="enlistButton" mnemonicParsing="false" onAction="#enlist" text="Enlist in Course">
                <font>
                   <Font size="14.0" />
                </font>
+               <HBox.margin>
+                  <Insets left="4.0" />
+               </HBox.margin>
             </Button>
             <Separator maxWidth="100.0" visible="false">
                <opaqueInsets>

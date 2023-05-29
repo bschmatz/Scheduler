@@ -1,7 +1,7 @@
 //EventUtil.java
 //This class is used for database operations regarding events
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.util;
 
@@ -15,14 +15,15 @@ import java.util.ArrayList;
 
 public class EventUtil {
 
-    public static void saveEvent(Event event, User user) {
+    //saves an event to the database
+    public static void saveEvent(Event event) {
 
-        try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 
             String sql = "INSERT INTO events (event_name, admin_id ,event_date, event_room, event_start_time, event_end_time) VALUES ('"
                     + event.getCourse()
                     + "', '"
-                    + UserUtil.getUserId(user)
+                    + event.getAdminId()
                     + "', '"
                     + event.getEventDate()
                     + "', '"
@@ -42,8 +43,9 @@ public class EventUtil {
         }
     }
 
-    public static void deleteEventsByCourse(Course course){
-        try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+    //deletes all events for a specific course
+    public static void deleteEventsByCourse(Course course) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 
             String sql = "DELETE FROM events WHERE event_name = '" + course.getCourseName() + "'";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -55,8 +57,9 @@ public class EventUtil {
         }
     }
 
-    public static void deleteEventById(int id){
-        try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+    //deletes an event by its id
+    public static void deleteEventById(int id) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 
             String sql = "DELETE FROM events WHERE event_id = '" + id + "'";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -68,8 +71,9 @@ public class EventUtil {
         }
     }
 
-    public static void deleteEventsByRoom(Room room){
-        try(Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+    //deletes all events for a specific room
+    public static void deleteEventsByRoom(Room room) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 
             String sql = "DELETE FROM events WHERE event_room = '" + room.getRoomName() + "'";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -81,7 +85,8 @@ public class EventUtil {
         }
     }
 
-    public static Event[] getEventsByUser(User user){
+    //gets all events for a specific user
+    public static Event[] getEventsByUser(User user) {
         ArrayList<Event> events = new ArrayList<>();
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
@@ -98,7 +103,7 @@ public class EventUtil {
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 //String event = rs.getString("event_name") + " | " + rs.getDate("event_date") + " | " + rs.getString("event_room") + " | " + rs.getTime("event_start_time") + " | " + rs.getTime("event_end_time");
                 Event event = new Event(new Room(rs.getString("event_room")),
                         rs.getInt("admin_id"),
@@ -110,8 +115,7 @@ public class EventUtil {
                 events.add(event);
             }
 
-
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Connection failed");
             e.printStackTrace();
         }
@@ -119,27 +123,17 @@ public class EventUtil {
         return events.toArray(new Event[0]);
     }
 
-    public static boolean eventsOverlap(Event[] userEvents, Event[] eventsByCourse){
-        for (Event userEvent : userEvents) {
-            for (Event eventByCourse : eventsByCourse) {
-                if (TimeUtil.dateOverlapping(userEvent.getEventDate(), eventByCourse.getEventDate()) && TimeUtil.timeOverlapping(userEvent.getEventStartTime(), userEvent.getEventEndTime(), eventByCourse.getEventStartTime(), eventByCourse.getEventEndTime())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static Event[] getEventsByRoom(String roomName){
+    //returns all events for a specific room
+    public static Event[] getEventsByRoom(String roomName) {
         ArrayList<Event> events = new ArrayList<>();
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password") ){
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 
             String sql = "SELECT * FROM events WHERE event_room = '" + roomName + "' ORDER BY event_date ASC";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 Event event = new Event(new Room(rs.getString("event_room")),
                         rs.getInt("admin_id"),
                         new Course(rs.getString("event_name")),
@@ -150,23 +144,24 @@ public class EventUtil {
                 events.add(event);
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Connection failed");
         }
 
         return events.toArray(new Event[0]);
     }
 
-    public static Event[] getEventsByCourse(String courseName){
+    //returns all events for a specific course
+    public static Event[] getEventsByCourse(String courseName) {
         ArrayList<Event> events = new ArrayList<>();
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password") ){
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 
             String sql = "SELECT * FROM events WHERE event_name = '" + courseName + "' ORDER BY event_date ASC";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 Event event = new Event(new Room(rs.getString("event_room")),
                         rs.getInt("admin_id"),
                         new Course(rs.getString("event_name")),
@@ -177,29 +172,30 @@ public class EventUtil {
                 events.add(event);
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Connection failed");
         }
 
         return events.toArray(new Event[0]);
     }
 
+    //returns all events
     public static Event[] getAllEvents() {
         ArrayList<Event> events = new ArrayList<>();
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
 
             String sql = "SELECT * FROM EVENTS ORDER BY event_date ASC";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 Event event = new Event(new Room(rs.getString("event_room")), 0, new Course(rs.getString("event_name")), rs.getDate("event_date"), rs.getTime("event_start_time"), rs.getTime("event_end_time"));
                 event.setEventId(rs.getInt("event_id"));
                 events.add(event);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Connection failed");
             e.printStackTrace();
         }
@@ -207,28 +203,8 @@ public class EventUtil {
         return events.toArray(new Event[0]);
     }
 
-    public static int getEventId(Event event){
-        int id = 0;
-
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
-            System.out.println("Connection successful");
-
-            String sql = "SELECT event_id FROM events WHERE event_name = '" + event.getCourse() + "' AND event_date = '" + event.getEventDate() + "' AND event_start_time = '" + event.getEventStartTime() + "' AND event_end_time = '" + event.getEventEndTime() + "'";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                id = rs.getInt("event_id");
-            }
-
-        }catch (Exception e){
-            System.out.println("Connection failed");
-        }
-
-        return id;
-    }
-
-    public static void updateEvent(Event event){
+    //updates a specific event
+    public static void updateEvent(Event event) {
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")) {
             System.out.println("Connection successful");
 
@@ -236,26 +212,21 @@ public class EventUtil {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.executeUpdate();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Connection failed");
         }
     }
 
-    public static boolean eventsOverlap(Event eventOne, Event eventTwo){
+    //checks if two given events overlap
+    public static boolean eventsOverlap(Event eventOne, Event eventTwo) {
         Date oneDate = eventOne.getEventDate();
         Date twoDate = eventTwo.getEventDate();
         Time oneStart = eventOne.getEventStartTime();
-        Time oneEnd= eventOne.getEventEndTime();
+        Time oneEnd = eventOne.getEventEndTime();
         Time twoStart = eventTwo.getEventStartTime();
         Time twoEnd = eventTwo.getEventEndTime();
 
-        if (TimeUtil.dateOverlapping(oneDate, twoDate) && TimeUtil.timeOverlapping(oneStart, oneEnd, twoStart, twoEnd)){
-            return true;
-        }
-
-        return false;
-
+        return TimeUtil.dateOverlapping(oneDate, twoDate) && TimeUtil.timeOverlapping(oneStart, oneEnd, twoStart, twoEnd);
 
     }
-
 }

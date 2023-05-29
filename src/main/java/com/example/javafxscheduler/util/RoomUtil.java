@@ -1,13 +1,11 @@
 //RoomUtil.java
 //This class is used for database operations regarding rooms
 //Author: Benedikt Schmatz
-//Last changed: 28.05.2023
+//Last changed: 29.05.2023
 
 package com.example.javafxscheduler.util;
 
-import com.example.javafxscheduler.entities.Event;
 import com.example.javafxscheduler.entities.Room;
-import com.example.javafxscheduler.entities.Wish;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 
 public class RoomUtil {
 
+    //saves a room to the database
     public static void saveRoom(Room room){
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://@localhost:3306/uebung07?user=bene&password=password")){
@@ -33,6 +32,7 @@ public class RoomUtil {
         }
     }
 
+    //deletes a room by its name
     public static void deleteRoom(Room room){
         EventUtil.deleteEventsByRoom(room);
         WishUtil.deleteWishesByRoom(room);
@@ -51,6 +51,7 @@ public class RoomUtil {
         }
     }
 
+    //returns all rooms from the database
     public static Room[] getAllRooms(){
         ArrayList<Room> rooms = new ArrayList<>();
 

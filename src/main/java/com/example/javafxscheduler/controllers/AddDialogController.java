@@ -21,9 +21,9 @@ public class AddDialogController {
     }
 
     public void save(){
-        if (typeBox.getValue().toString().equals("Course") && elementName.getText() != null){
+        if (typeBox.getValue().equals("Course") && elementName.getText() != null){
             CourseUtil.saveCourse(new Course(elementName.getText()));
-        } else if (typeBox.getValue().toString().equals("Room") && elementName.getText() != null){
+        } else if (typeBox.getValue().equals("Room") && elementName.getText() != null){
             RoomUtil.saveRoom(new Room(elementName.getText()));
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);

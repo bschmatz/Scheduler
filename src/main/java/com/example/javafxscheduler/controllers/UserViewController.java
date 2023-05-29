@@ -27,7 +27,7 @@ public class UserViewController {
     }
 
     public void setCurrentUser(User user) {
-        this.currentUser = user;
+        currentUser = user;
 
         eventList.setItems(FXCollections.observableArrayList(EventUtil.getEventsByUser(currentUser)));
         System.out.println(eventList.getItems().toString());
@@ -56,13 +56,17 @@ public class UserViewController {
         Event[] userEvents = EventUtil.getEventsByUser(currentUser);
         Event[] EventsByCourse = EventUtil.getEventsByCourse(courseBox.getValue().toString());
 
-        if (EventUtil.eventsOverlap(userEvents, EventsByCourse)){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Overlapping events!");
-            alert.setHeaderText("One or more events are overlapping!");
-            alert.setContentText("Please choose another event or contact an administrator!");
-            alert.showAndWait();
-            return;
+        for (Event e : userEvents){
+            for (Event ev : EventsByCourse){
+                if (EventUtil.eventsOverlap(e, ev)){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Overlapping events!");
+                    alert.setHeaderText("One or more events are overlapping!");
+                    alert.setContentText("Please choose another event or contact an administrator!");
+                    alert.showAndWait();
+                    return;
+                }
+            }
         }
 
         EventRegistrationUtil.saveEventRegistration(courseBox.getValue().toString(), UserUtil.getUserId(currentUser));
